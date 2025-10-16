@@ -13,7 +13,9 @@
 
 ---
 
-## Requisitos Funcionais
+## Requisitos
+
+### Funcionais
 
 | RF  | Requisito                                                                                               |
 |------|---------------------------------------------------------------------------------------------------------|
@@ -30,10 +32,14 @@
 
 ---
 
+## Não Funcionais
+
 | RNF  | Requisito                                                                                               |
 |------|---------------------------------------------------------------------------------------------------------|
 | RNF1  | O sistema deve ser desenvolvido utilizando a arquitetura MVC |
 | RNF2  | O sistema deve enviar notificações por email de forma automática |
+
+---
 
 ## Regras de Negócio
 
