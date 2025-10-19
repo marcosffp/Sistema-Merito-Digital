@@ -66,3 +66,7 @@
 ### Diagrama de Classe
 
 ![ClassDiagram](/projeto/DiagramaDeClasse.drawio.svg)
+
+### Diagrama de Implantação
+
+![ClassDiagram](/projeto/DiagramaDeImplantacao.jpg)
