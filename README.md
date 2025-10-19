@@ -70,3 +70,12 @@
 ### Diagrama de Implantação
 
 ![ClassDiagram](/projeto/DiagramaDeImplantacao.jpg)
+
+## Definição e implementação da estratégia de acesso ao banco de dados
+
+A estratégia de acesso a dados visa isolar a lógica de negócio dos detalhes de armazenamento do SGBD. A aplicação utilizará o Spring Data JPA, um Framework ORM , que implementa o Padrão Repository.
+
+- Classes do Modelo de Domínio (pasta model) são mapeadas para o banco de dados.
+- Pasta repository define o contrato de acesso aos dados
+- Camada service (Camada de Negócio) utiliza os repositories (Camada de Dados) para executar a lógica de negócio e gerencia Transações para garantir a consistência dos dados.
+- Camada controller consome os services.
