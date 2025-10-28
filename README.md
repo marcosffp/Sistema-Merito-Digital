@@ -79,6 +79,10 @@
 
 ![ERDiagram](/projeto/DiagramaER.drawio.png)
 
+#### Modelo de Entidade Relacional
+
+![MRModel](/projeto/ModeloER.drawio.svg)
+
 ## Definição e implementação da estratégia de acesso ao banco de dados
 
 A estratégia de acesso a dados visa isolar a lógica de negócio dos detalhes de armazenamento do SGBD. A aplicação utilizará o Spring Data JPA, um Framework ORM , que implementa o Padrão Repository.
