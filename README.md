@@ -1,4 +1,4 @@
-# Sistema de Mérito- Digital
+# Sistema de Mérito Digital
 
 ## Histórias de Usuário
 
@@ -67,9 +67,17 @@
 
 ![ClassDiagram](/projeto/DiagramaDeClasse.drawio.svg)
 
+### Diagrama de Componentes
+
+![ComponentDiagram](/projeto/DiagramaDeComponentes.drawio.png)
+
 ### Diagrama de Implantação
 
-![ClassDiagram](/projeto/DiagramaDeImplantacao.jpg)
+![ImplantationDiagram](/projeto/DiagramaDeImplantacao.jpg)
+
+### Diagrama de Entidade-Relacionamento
+
+![ERDiagram](/projeto/DiagramaER.drawio.png)
 
 ## Definição e implementação da estratégia de acesso ao banco de dados
 
@@ -79,3 +87,5 @@ A estratégia de acesso a dados visa isolar a lógica de negócio dos detalhes d
 - Pasta repository define o contrato de acesso aos dados
 - Camada service (Camada de Negócio) utiliza os repositories (Camada de Dados) para executar a lógica de negócio e gerencia Transações para garantir a consistência dos dados.
 - Camada controller consome os services.
+
+Para mais detalhes da implementação, consulte [repository/](/implementacao/src/main/java/com/projeto/lab/implementacao/repository) e [model/](/implementacao/src/main/java/com/projeto/lab/implementacao/model)
