@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.projeto.lab</groupId>
-	<artifactId>implementacao</artifactId>
+	<artifactId>api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>implementacao</name>
-	<description>Demo project for Spring Boot</description>
+	<name>api</name>
+	<description>Api do Sistema Merito Digital</description>
 	<url/>
 	<licenses>
 		<license/>
