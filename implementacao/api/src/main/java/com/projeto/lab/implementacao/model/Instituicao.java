@@ -23,6 +23,6 @@ public class Instituicao {
     
     private String endereco;
     
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Participante> participantes;
 }

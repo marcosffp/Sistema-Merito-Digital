@@ -18,6 +18,6 @@ public class Empresa extends Usuario {
     
     private String endereco;
     
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Vantagem> vantagens;
 }

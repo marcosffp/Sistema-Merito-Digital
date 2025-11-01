@@ -2,7 +2,6 @@ package com.projeto.lab.implementacao.service;
 
 import com.projeto.lab.implementacao.model.Distribuicao;
 import com.projeto.lab.implementacao.model.Professor;
-import com.projeto.lab.implementacao.model.Aluno;
 import com.projeto.lab.implementacao.repository.DistribuicaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,25 +20,18 @@ public class DistribuicaoService {
 
     @Transactional
     public Distribuicao distribuirMoedas(Long professorId, Long alunoId, Double valor, String motivo) {
-        // Validar saldo do professor
-        Professor professor = professorService.buscarPorId(professorId)
-            .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
-        
+        Professor professor = professorService.buscarPorId(professorId);
+
         if (professor.getSaldoMoedas() < valor) {
             throw new RuntimeException("Saldo insuficiente");
         }
 
-        // Validar aluno
-        Aluno aluno = alunoService.buscarPorId(alunoId)
-            .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        // Aluno aluno = alunoService.buscarPorId(alunoId);
 
-        // Descontar moedas do professor
         professorService.distribuirMoedas(professorId, valor);
 
-        // Adicionar moedas ao aluno
         alunoService.receberMoedas(alunoId, valor);
 
-        // Criar registro de distribuição
         Distribuicao distribuicao = new Distribuicao();
         distribuicao.setCodigo(UUID.randomUUID().toString());
         distribuicao.setData(LocalDateTime.now());
@@ -48,10 +40,9 @@ public class DistribuicaoService {
         distribuicao.setMotivo(motivo);
 
         Distribuicao salva = distribuicaoRepository.save(distribuicao);
-        
-        // Enviar notificação
+
         salva.enviarNotificacao();
-        
+
         return salva;
     }
 

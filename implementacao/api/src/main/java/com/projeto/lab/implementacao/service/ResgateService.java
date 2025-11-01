@@ -21,23 +21,17 @@ public class ResgateService {
 
     @Transactional
     public Resgate resgatar(Long alunoId, Long vantagemId) {
-        // Validar aluno
-        Aluno aluno = alunoService.buscarPorId(alunoId)
-            .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        Aluno aluno = alunoService.buscarPorId(alunoId);
 
-        // Validar vantagem
         Vantagem vantagem = vantagemService.buscarPorId(vantagemId)
-            .orElseThrow(() -> new RuntimeException("Vantagem não encontrada"));
+                .orElseThrow(() -> new RuntimeException("Vantagem não encontrada"));
 
-        // Validar saldo
         if (aluno.getSaldoMoedas() < vantagem.getCusto()) {
             throw new RuntimeException("Saldo insuficiente");
         }
 
-        // Descontar moedas do aluno
         alunoService.descontarMoedas(alunoId, vantagem.getCusto());
 
-        // Criar registro de resgate
         Resgate resgate = new Resgate();
         resgate.setCodigo(UUID.randomUUID().toString());
         resgate.setCupom(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
@@ -46,10 +40,9 @@ public class ResgateService {
         resgate.setStatus("CONCLUIDO");
 
         Resgate salvo = resgateRepository.save(resgate);
-        
-        // Enviar notificação (email com cupom)
+
         salvo.enviarNotificacao();
-        
+
         return salvo;
     }
 
@@ -76,12 +69,12 @@ public class ResgateService {
     @Transactional
     public Resgate validarCupom(String cupom) {
         Resgate resgate = resgateRepository.findByCupom(cupom)
-            .orElseThrow(() -> new RuntimeException("Cupom não encontrado"));
-        
+                .orElseThrow(() -> new RuntimeException("Cupom não encontrado"));
+
         if (!"CONCLUIDO".equals(resgate.getStatus())) {
             throw new RuntimeException("Cupom já utilizado ou inválido");
         }
-        
+
         resgate.setStatus("UTILIZADO");
         return resgateRepository.save(resgate);
     }

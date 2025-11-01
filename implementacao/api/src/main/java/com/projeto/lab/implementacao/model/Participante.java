@@ -11,11 +11,14 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Participante extends Usuario {
     @Column(nullable = false)
-    private Double saldoMoedas = 0.0;
+    private Double saldoMoedas;
     
     @Column(unique = true, nullable = false)
     private String cpf;
+
+    @ManyToOne
+    @JoinColumn(name = "instituicao_id", nullable = false) 
+    private Instituicao instituicao;
 }

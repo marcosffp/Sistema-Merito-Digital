@@ -14,7 +14,11 @@ import lombok.AllArgsConstructor;
 public class Resgate extends Transacao {
     @Column(unique = true, nullable = false)
     private String cupom;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "aluno_id", nullable = false)
+    private Aluno aluno;
+
     @Override
     public void enviarNotificacao() {
         // Implementação da notificação de resgate

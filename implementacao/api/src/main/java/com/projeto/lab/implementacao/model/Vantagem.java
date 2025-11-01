@@ -24,4 +24,8 @@ public class Vantagem {
     private Double custo;
     
     private String imagem;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", nullable = false)
+    private Empresa empresa;
 }
