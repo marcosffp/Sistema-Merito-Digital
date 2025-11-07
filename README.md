@@ -79,9 +79,15 @@
 
 ![ERDiagram](/projeto/DiagramaER.drawio.png)
 
-#### Modelo de Entidade Relacional
+### Modelo de Entidade Relacional
 
 ![MRModel](/projeto/ModeloER.drawio.svg)
+
+### Diagramas de Seqência
+
+#### Diagrama de Sequência de Gestão de Vantagem
+
+![SequenceDiagram_AdvantageManagement](/projeto/DiagramaDeSequencia_GestaoDeVantagem.drawio.svg)
 
 ## Definição e implementação da estratégia de acesso ao banco de dados
 
@@ -92,4 +98,4 @@ A estratégia de acesso a dados visa isolar a lógica de negócio dos detalhes d
 - Camada service (Camada de Negócio) utiliza os repositories (Camada de Dados) para executar a lógica de negócio e gerencia Transações para garantir a consistência dos dados.
 - Camada controller consome os services.
 
-Para mais detalhes da implementação, consulte [repository/](/implementacao/src/main/java/com/projeto/lab/implementacao/repository) e [model/](/implementacao/src/main/java/com/projeto/lab/implementacao/model)
+Para mais detalhes da implementação, consulte [repository/](/implementacao/api/src/main/java/com/projeto/lab/implementacao/repository) e [model/](/implementacao/api/src/main/java/com/projeto/lab/implementacao/model)
