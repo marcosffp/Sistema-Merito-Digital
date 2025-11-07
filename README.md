@@ -89,6 +89,10 @@
 
 ![SequenceDiagram_AdvantageManagement](/projeto/DiagramaDeSequencia_GestaoDeVantagem.drawio.svg)
 
+#### Diagrama de Sequência de Visualizar Vantagens
+
+![SequenceDiagram_GetAdvantages](/projeto/DiagramaDeSequencia_VisualizarVantagens.drawio.svg)
+
 ## Definição e implementação da estratégia de acesso ao banco de dados
 
 A estratégia de acesso a dados visa isolar a lógica de negócio dos detalhes de armazenamento do SGBD. A aplicação utilizará o Spring Data JPA, um Framework ORM , que implementa o Padrão Repository.
