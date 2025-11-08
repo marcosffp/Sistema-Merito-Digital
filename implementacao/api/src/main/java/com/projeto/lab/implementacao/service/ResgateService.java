@@ -1,81 +1,85 @@
 package com.projeto.lab.implementacao.service;
 
+import com.projeto.lab.implementacao.dto.ResgateRequest;
+import com.projeto.lab.implementacao.dto.ResgateResponse;
+import com.projeto.lab.implementacao.dto.VantagemResponse;
+import com.projeto.lab.implementacao.exception.ResgateException;
+import com.projeto.lab.implementacao.mapper.ResgateMapper;
+import com.projeto.lab.implementacao.mapper.VantagemMapper;
 import com.projeto.lab.implementacao.model.Resgate;
 import com.projeto.lab.implementacao.model.Aluno;
 import com.projeto.lab.implementacao.model.Vantagem;
 import com.projeto.lab.implementacao.repository.ResgateRepository;
-import lombok.RequiredArgsConstructor;
+
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.stream.Collectors;
+import java.security.SecureRandom;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ResgateService {
     private final ResgateRepository resgateRepository;
     private final AlunoService alunoService;
     private final VantagemService vantagemService;
+    private final ResgateMapper resgateMapper;
+    private final VantagemMapper vantagemMapper;
 
-    @Transactional
-    public Resgate resgatar(Long alunoId, Long vantagemId) {
-        Aluno aluno = alunoService.buscarPorId(alunoId);
-
-        Vantagem vantagem = vantagemService.buscarPorId(vantagemId)
-                .orElseThrow(() -> new RuntimeException("Vantagem não encontrada"));
-
-        if (aluno.getSaldoMoedas() < vantagem.getCusto()) {
-            throw new RuntimeException("Saldo insuficiente");
-        }
-
-        alunoService.descontarMoedas(alunoId, vantagem.getCusto());
+    public ResgateResponse cadastrarResgate(ResgateRequest dto) {
+        Aluno aluno = alunoService.buscarPorId(dto.alunoId());
+        Vantagem vantagem = vantagemService.buscarPorId(dto.vantagemId());
 
         Resgate resgate = new Resgate();
-        resgate.setCodigo(UUID.randomUUID().toString());
-        resgate.setCupom(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        resgate.setCupom(gerarCupomAleatorio());
+        resgate.setCodigo(String.valueOf(System.currentTimeMillis()));
         resgate.setData(LocalDateTime.now());
         resgate.setValor(vantagem.getCusto());
-        resgate.setStatus("CONCLUIDO");
+        resgate.setAluno(aluno);
+        resgate.setVantagem(vantagem);
 
         Resgate salvo = resgateRepository.save(resgate);
 
-        salvo.enviarNotificacao();
-
-        return salvo;
+        return resgateMapper.toResponse(salvo);
     }
 
-    public Optional<Resgate> buscarPorId(Long id) {
-        return resgateRepository.findById(id);
-    }
+    private String gerarCupomAleatorio() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder cupom = new StringBuilder(6);
 
-    public Optional<Resgate> buscarPorCupom(String cupom) {
-        return resgateRepository.findByCupom(cupom);
-    }
-
-    public Optional<Resgate> buscarPorCodigo(String codigo) {
-        return resgateRepository.findByCodigo(codigo);
-    }
-
-    public List<Resgate> listarTodos() {
-        return resgateRepository.findAll();
-    }
-
-    public void deletar(Long id) {
-        resgateRepository.deleteById(id);
-    }
-
-    @Transactional
-    public Resgate validarCupom(String cupom) {
-        Resgate resgate = resgateRepository.findByCupom(cupom)
-                .orElseThrow(() -> new RuntimeException("Cupom não encontrado"));
-
-        if (!"CONCLUIDO".equals(resgate.getStatus())) {
-            throw new RuntimeException("Cupom já utilizado ou inválido");
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(caracteres.length());
+            cupom.append(caracteres.charAt(index));
         }
 
-        resgate.setStatus("UTILIZADO");
-        return resgateRepository.save(resgate);
+        return cupom.toString();
+    }
+
+    public List<ResgateResponse> listarResgatesPorAluno(Long alunoId) {
+        alunoService.buscarPorId(alunoId);
+
+        List<Resgate> resgates = resgateRepository.findAll().stream()
+                .filter(resgate -> resgate.getAluno().getId().equals(alunoId))
+                .collect(Collectors.toList());
+
+        return resgates.stream()
+                .map(resgateMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public VantagemResponse mostrarDetalhesVantagemPorResgate(Long resgateId) {
+        Resgate resgate = resgateRepository.findById(resgateId)
+                .orElseThrow(() -> new ResgateException("Resgate não encontrado"));
+
+        Vantagem vantagem = resgate.getVantagem();
+        if (vantagem == null) {
+            throw new ResgateException("Nenhuma vantagem associada a este resgate");
+        }
+
+        return vantagemMapper.toResponse(vantagem);
     }
 }

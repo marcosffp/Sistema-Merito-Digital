@@ -46,11 +46,11 @@ public class AlunoMapper {
     private ResgateResponse toResgateResponse(Resgate resgate) {
         return new ResgateResponse(
             resgate.getId(),
+            resgate.getCupom(),
             resgate.getCodigo(),
-            resgate.getData(),
             resgate.getValor(),
-            resgate.getStatus(),
-            resgate.getCupom()
+            resgate.getAluno() != null ? resgate.getAluno().getNome() : null, // Preenche o nome do aluno
+            resgate.getVantagem() != null ? resgate.getVantagem().getNome() : null // Preenche o nome da vantagem
         );
     }
 }

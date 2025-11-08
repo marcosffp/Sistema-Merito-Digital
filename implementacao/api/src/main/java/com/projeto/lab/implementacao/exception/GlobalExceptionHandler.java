@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,5 +77,32 @@ public class GlobalExceptionHandler {
         response.put("error", "Erro com Empresa");
         response.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // Handle VantagemException
+    @ExceptionHandler(VantagemException.class)
+    public ResponseEntity<Map<String, String>> handleVantagemException(VantagemException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Erro com Vantagem");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // Handle ResgateException
+    @ExceptionHandler(ResgateException.class)
+    public ResponseEntity<Map<String, String>> handleResgateException(ResgateException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Erro com Resgate");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // Handle ExpiredJwtException
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Map<String, String>> handleExpiredJwtException(ExpiredJwtException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Token expirado");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 }

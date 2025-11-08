@@ -7,6 +7,7 @@ import com.projeto.lab.implementacao.dto.EmpresaUpdateRequest;
 import com.projeto.lab.implementacao.exception.EmpresaException;
 import com.projeto.lab.implementacao.mapper.EmpresaMapper;
 import com.projeto.lab.implementacao.model.Empresa;
+import com.projeto.lab.implementacao.model.Usuario;
 import com.projeto.lab.implementacao.repository.EmpresaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ public class EmpresaService {
     private final EmpresaRepository empresaRepository;
     private final EmpresaMapper empresaMapper;
     private final PasswordEncoder passwordEncoder;
+    private final UsuarioService usuarioService;
 
     public Empresa buscarPorId(Long id) {
         return empresaRepository.findById(id)
@@ -58,14 +60,26 @@ public class EmpresaService {
 
     @Transactional
     public Empresa cadastrarEmpresa(EmpresaRequest dto) {
-        Empresa empresa = new Empresa();
-        empresa.setNome(dto.nome());
-        empresa.setEmail(dto.email());
-        empresa.setSenha(passwordEncoder.encode(dto.senha()));
-        empresa.setCnpj(dto.cnpj());
-        empresa.setEndereco(dto.endereco());
+        try {
+            Usuario existentePorUsername = usuarioService.buscarEmail(dto.email());
+            if (existentePorUsername != null) {
+                throw new EmpresaException("O email " + dto.email() + " já está em uso.");
+            }
+            Empresa existentePorEmail = empresaRepository.findByEmail(dto.email()).orElse(null);
+            if (existentePorEmail != null) {
+                throw new EmpresaException("O email " + dto.email() + " já está em uso.");
+            }
+            Empresa empresa = new Empresa();
+            empresa.setNome(dto.nome());
+            empresa.setEmail(dto.email());
+            empresa.setSenha(passwordEncoder.encode(dto.senha()));
+            empresa.setCnpj(dto.cnpj());
+            empresa.setEndereco(dto.endereco());
 
-        return empresaRepository.save(empresa);
+            return empresaRepository.save(empresa);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new EmpresaException("Erro ao cadastrar empresa: já existe uma empresa com o mesmo email ou CNPJ.");
+        }
     }
 
     public EmpresaResumoResponse obterResumoEmpresa(Long id) {
@@ -80,35 +94,39 @@ public class EmpresaService {
 
     @Transactional
     public EmpresaCompletaResponse updateEmpresa(Long id, EmpresaUpdateRequest dto) {
-        Empresa empresa = buscarPorId(id);
+        try {
+            Empresa empresa = buscarPorId(id);
 
-        if (dto.nome() != null && !dto.nome().isBlank()) {
-            empresa.setNome(dto.nome());
-        }
-        if (dto.email() != null && !dto.email().isBlank()) {
-            empresaRepository.findByEmail(dto.email()).ifPresent(existingEmpresa -> {
-                if (!existingEmpresa.getId().equals(id)) {
-                    throw new EmpresaException("O email " + dto.email() + " já está em uso por outra empresa.");
-                }
-            });
-            empresa.setEmail(dto.email());
-        }
-        if (dto.senha() != null && !dto.senha().isBlank()) {
-            empresa.setSenha(passwordEncoder.encode(dto.senha()));
-        }
-        if (dto.cnpj() != null && !dto.cnpj().isBlank()) {
-            empresaRepository.findByCnpj(dto.cnpj()).ifPresent(existingEmpresa -> {
-                if (!existingEmpresa.getId().equals(id)) {
-                    throw new EmpresaException("O CNPJ " + dto.cnpj() + " já está em uso por outra empresa.");
-                }
-            });
-            empresa.setCnpj(dto.cnpj());
-        }
-        if (dto.endereco() != null && !dto.endereco().isBlank()) {
-            empresa.setEndereco(dto.endereco());
-        }
+            if (dto.nome() != null && !dto.nome().isBlank()) {
+                empresa.setNome(dto.nome());
+            }
+            if (dto.email() != null && !dto.email().isBlank()) {
+                empresaRepository.findByEmail(dto.email()).ifPresent(existingEmpresa -> {
+                    if (!existingEmpresa.getId().equals(id)) {
+                        throw new EmpresaException("O email " + dto.email() + " já está em uso por outra empresa.");
+                    }
+                });
+                empresa.setEmail(dto.email());
+            }
+            if (dto.senha() != null && !dto.senha().isBlank()) {
+                empresa.setSenha(passwordEncoder.encode(dto.senha()));
+            }
+            if (dto.cnpj() != null && !dto.cnpj().isBlank()) {
+                empresaRepository.findByCnpj(dto.cnpj()).ifPresent(existingEmpresa -> {
+                    if (!existingEmpresa.getId().equals(id)) {
+                        throw new EmpresaException("O CNPJ " + dto.cnpj() + " já está em uso por outra empresa.");
+                    }
+                });
+                empresa.setCnpj(dto.cnpj());
+            }
+            if (dto.endereco() != null && !dto.endereco().isBlank()) {
+                empresa.setEndereco(dto.endereco());
+            }
 
-        Empresa empresaAtualizada = empresaRepository.save(empresa);
-        return empresaMapper.toCompletaResponse(empresaAtualizada);
+            Empresa empresaAtualizada = empresaRepository.save(empresa);
+            return empresaMapper.toCompletaResponse(empresaAtualizada);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new EmpresaException("Erro ao atualizar empresa: já existe uma empresa com o mesmo email ou CNPJ.");
+        }
     }
 }

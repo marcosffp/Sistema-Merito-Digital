@@ -27,8 +27,7 @@ public class UsuarioService {
         return usuario;
     }
 
-    public Usuario save(Usuario usuario) {
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        return usuarioRepository.save(usuario);
+    public Usuario buscarEmail(String email) {
+        return usuarioRepository.findByEmail(email).orElse(null);
     }
 }

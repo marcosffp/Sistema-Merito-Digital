@@ -87,20 +87,32 @@ public class AlunoService {
 
     @Transactional
     public Aluno cadastrarAluno(AlunoRequest dto) {
-        Aluno aluno = new Aluno();
-        aluno.setNome(dto.nome());
-        aluno.setEmail(dto.email());
-        aluno.setSenha(passwordEncoder.encode(dto.senha()));
-        aluno.setCpf(dto.cpf());
-        aluno.setRg(dto.rg());
-        aluno.setEndereco(dto.endereco());
-        aluno.setCurso(dto.curso());
-        aluno.setSaldoMoedas(0.0);
+        try {
+            alunoRepository.findByEmail(dto.email()).ifPresent(existingAluno -> {
+                throw new AlunoException("O email " + dto.email() + " já está em uso.");
+            });
 
-        Instituicao instituicao = instituicaoService.buscarPorNome(dto.instituicao());
-        aluno.setInstituicao(instituicao);
+            alunoRepository.findByCpf(dto.cpf()).ifPresent(existingAluno -> {
+                throw new AlunoException("O CPF " + dto.cpf() + " já está em uso.");
+            });
 
-        return alunoRepository.save(aluno);
+            Aluno aluno = new Aluno();
+            aluno.setNome(dto.nome());
+            aluno.setEmail(dto.email());
+            aluno.setSenha(passwordEncoder.encode(dto.senha()));
+            aluno.setCpf(dto.cpf());
+            aluno.setRg(dto.rg());
+            aluno.setEndereco(dto.endereco());
+            aluno.setCurso(dto.curso());
+            aluno.setSaldoMoedas(0.0);
+
+            Instituicao instituicao = instituicaoService.buscarPorNome(dto.instituicao());
+            aluno.setInstituicao(instituicao);
+
+            return alunoRepository.save(aluno);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new AlunoException("Erro ao cadastrar aluno: já existe um aluno com o mesmo email ou CPF.");
+        }
     }
 
     public AlunoResumoResponse obterResumoAluno(Long id) {

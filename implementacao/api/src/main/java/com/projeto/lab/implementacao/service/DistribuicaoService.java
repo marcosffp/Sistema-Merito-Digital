@@ -26,7 +26,6 @@ public class DistribuicaoService {
             throw new RuntimeException("Saldo insuficiente");
         }
 
-        // Aluno aluno = alunoService.buscarPorId(alunoId);
 
         professorService.distribuirMoedas(professorId, valor);
 
@@ -36,7 +35,6 @@ public class DistribuicaoService {
         distribuicao.setCodigo(UUID.randomUUID().toString());
         distribuicao.setData(LocalDateTime.now());
         distribuicao.setValor(valor);
-        distribuicao.setStatus("CONCLUIDA");
         distribuicao.setMotivo(motivo);
 
         Distribuicao salva = distribuicaoRepository.save(distribuicao);

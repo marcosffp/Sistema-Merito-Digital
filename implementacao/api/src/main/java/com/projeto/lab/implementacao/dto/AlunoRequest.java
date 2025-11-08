@@ -13,7 +13,7 @@ public record AlunoRequest(
     String email,
 
     @NotBlank(message = "A senha é obrigatória")
-    @Size(min = 8, message = "A senha deve ter no mínimo 6 caracteres")
+    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
     String senha,
 
     @NotBlank(message = "O CPF é obrigatório")

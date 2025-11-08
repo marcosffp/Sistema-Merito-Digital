@@ -24,7 +24,4 @@ public abstract class Transacao implements Notificacao {
     
     @Column(nullable = false)
     private Double valor;
-    
-    @Column(nullable = false)
-    private String status;
 }
