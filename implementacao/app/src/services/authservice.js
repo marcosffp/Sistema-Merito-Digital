@@ -152,6 +152,29 @@ const authService = {
       return null;
     }
   },
+
+  /**
+   * Registra um novo usuário (Aluno ou Empresa)
+   * @param {Object} data Dados do cadastro
+   * @param {string} type Tipo: 'aluno' ou 'empresa'
+   * @returns {Promise<Object>} Dados do usuário decodificados
+   */
+  register: async (data, type) => {
+    try {
+      const endpoint = type === 'aluno' ? '/alunos/cadastro' : '/empresas/cadastro';
+      const response = await api.post(endpoint, data);
+      const { token } = response.data;
+      
+      if (token) {
+        localStorage.setItem('token', token);
+        return authService.decodeToken(token);
+      }
+      
+      throw new Error('Token não recebido');
+    } catch (error) {
+      throw error.response?.data?.message || 'Erro ao realizar cadastro';
+    }
+  },
 };
 
 export default authService;
