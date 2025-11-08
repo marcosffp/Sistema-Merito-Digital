@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { maskCNPJ, removeMask } from '../utils/masks';
 import styles from './RegisterEmpresaPage.module.css';
 
 const RegisterEmpresaPage = () => {
@@ -19,9 +20,16 @@ const RegisterEmpresaPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let maskedValue = value;
+
+    // Aplica máscara para CNPJ
+    if (name === 'cnpj') {
+      maskedValue = maskCNPJ(value);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: maskedValue
     }));
     setError('');
   };
@@ -44,7 +52,14 @@ const RegisterEmpresaPage = () => {
 
     try {
       const { confirmarSenha, ...dataToSend } = formData;
-      await register(dataToSend, 'empresa');
+      
+      // Remove máscara antes de enviar
+      const dataWithoutMasks = {
+        ...dataToSend,
+        cnpj: removeMask(dataToSend.cnpj)
+      };
+
+      await register(dataWithoutMasks, 'empresa');
       navigate('/dashboard/empresa');
     } catch (err) {
       setError(err || 'Erro ao realizar cadastro. Tente novamente.');
@@ -115,6 +130,7 @@ const RegisterEmpresaPage = () => {
                   placeholder="00.000.000/0000-00"
                   required
                   disabled={loading}
+                  maxLength={18}
                 />
               </div>
             </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { maskCPF, maskRG, removeMask } from '../utils/masks';
 import styles from './RegisterAlunoPage.module.css';
 
 const RegisterAlunoPage = () => {
@@ -22,9 +23,18 @@ const RegisterAlunoPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let maskedValue = value;
+
+    // Aplica máscaras conforme o campo
+    if (name === 'cpf') {
+      maskedValue = maskCPF(value);
+    } else if (name === 'rg') {
+      maskedValue = maskRG(value);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: maskedValue
     }));
     setError('');
   };
@@ -47,7 +57,15 @@ const RegisterAlunoPage = () => {
 
     try {
       const { confirmarSenha, ...dataToSend } = formData;
-      await register(dataToSend, 'aluno');
+      
+      // Remove máscaras antes de enviar
+      const dataWithoutMasks = {
+        ...dataToSend,
+        cpf: removeMask(dataToSend.cpf),
+        rg: removeMask(dataToSend.rg)
+      };
+
+      await register(dataWithoutMasks, 'aluno');
       navigate('/dashboard/aluno');
     } catch (err) {
       setError(err || 'Erro ao realizar cadastro. Tente novamente.');
@@ -118,6 +136,7 @@ const RegisterAlunoPage = () => {
                   placeholder="000.000.000-00"
                   required
                   disabled={loading}
+                  maxLength={14}
                 />
               </div>
 
@@ -132,6 +151,7 @@ const RegisterAlunoPage = () => {
                   placeholder="00.000.000-0"
                   required
                   disabled={loading}
+                  maxLength={12}
                 />
               </div>
 

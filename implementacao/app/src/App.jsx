@@ -3,6 +3,11 @@ import { AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterAlunoPage from './pages/RegisterAlunoPage';
 import RegisterEmpresaPage from './pages/RegisterEmpresaPage';
+import DashboardAlunoPage from './pages/DashboardAlunoPage';
+import DashboardProfessorPage from './pages/DashboardProfessorPage';
+import DashboardEmpresaPage from './pages/DashboardEmpresaPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -12,8 +17,37 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/cadastro/aluno" element={<RegisterAlunoPage />} />
           <Route path="/cadastro/empresa" element={<RegisterEmpresaPage />} />
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          
+          {/* Rotas protegidas */}
+          <Route 
+            path="/dashboard/aluno" 
+            element={
+              <ProtectedRoute allowedRoles={['Aluno']}>
+                <DashboardAlunoPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/dashboard/professor" 
+            element={
+              <ProtectedRoute allowedRoles={['Professor']}>
+                <DashboardProfessorPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/dashboard/empresa" 
+            element={
+              <ProtectedRoute allowedRoles={['Empresa']}>
+                <DashboardEmpresaPage />
+              </ProtectedRoute>
+            } 
+          />
+          
           <Route path="/" element={<Navigate to="/login" replace />} />
-          {/* Adicione outras rotas aqui conforme necessário */}
         </Routes>
       </AuthProvider>
     </Router>

@@ -1,0 +1,50 @@
+.unauthorizedPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.content {
+  background: var(--branco);
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;
+}
+
+.content h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.content h2 {
+  color: var(--preto);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.content p {
+  color: var(--cinza-escuro);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.button {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: var(--branco);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
