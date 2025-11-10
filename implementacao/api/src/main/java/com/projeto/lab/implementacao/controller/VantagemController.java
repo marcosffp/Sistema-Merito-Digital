@@ -65,4 +65,14 @@ public class VantagemController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarVantagem(@PathVariable Long id) {
+        try {
+            vantagemService.deletarVantagem(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

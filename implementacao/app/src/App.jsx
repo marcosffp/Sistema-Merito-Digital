@@ -6,6 +6,9 @@ import RegisterEmpresaPage from './pages/RegisterEmpresaPage';
 import DashboardAlunoPage from './pages/DashboardAlunoPage';
 import DashboardProfessorPage from './pages/DashboardProfessorPage';
 import DashboardEmpresaPage from './pages/DashboardEmpresaPage';
+import VantagensEmpresaPage from './pages/VantagensEmpresaPage';
+import CadastrarVantagemPage from './pages/CadastrarVantagemPage';
+import EditarVantagemPage from './pages/EditarVantagemPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -19,7 +22,7 @@ function App() {
           <Route path="/cadastro/empresa" element={<RegisterEmpresaPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           
-          {/* Rotas protegidas */}
+          {/* Rotas protegidas - Aluno */}
           <Route 
             path="/dashboard/aluno" 
             element={
@@ -29,6 +32,7 @@ function App() {
             } 
           />
           
+          {/* Rotas protegidas - Professor */}
           <Route 
             path="/dashboard/professor" 
             element={
@@ -38,11 +42,39 @@ function App() {
             } 
           />
           
+          {/* Rotas protegidas - Empresa */}
           <Route 
             path="/dashboard/empresa" 
             element={
               <ProtectedRoute allowedRoles={['Empresa']}>
                 <DashboardEmpresaPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/empresa/vantagens" 
+            element={
+              <ProtectedRoute allowedRoles={['Empresa']}>
+                <VantagensEmpresaPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/empresa/vantagens/nova" 
+            element={
+              <ProtectedRoute allowedRoles={['Empresa']}>
+                <CadastrarVantagemPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/empresa/vantagens/editar/:id" 
+            element={
+              <ProtectedRoute allowedRoles={['Empresa']}>
+                <EditarVantagemPage />
               </ProtectedRoute>
             } 
           />

@@ -32,12 +32,12 @@ const DashboardEmpresaPage = () => {
           </div>
 
           <div className={styles.infoCards}>
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/empresa/vantagens')}>
               <h3>🎁 Minhas Vantagens</h3>
               <p>Gerencie suas vantagens cadastradas</p>
             </div>
 
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/empresa/vantagens/nova')}>
               <h3>➕ Nova Vantagem</h3>
               <p>Cadastre novas vantagens</p>
             </div>

@@ -47,7 +47,8 @@ public class EmpresaMapper {
             vantagem.getNome(),
             vantagem.getDescricao(),
             vantagem.getCusto(),
-            vantagem.getImagem()
+            vantagem.getImagem(),
+            vantagem.getEmpresa() != null ? vantagem.getEmpresa().getId() : null
         );
     }
 }

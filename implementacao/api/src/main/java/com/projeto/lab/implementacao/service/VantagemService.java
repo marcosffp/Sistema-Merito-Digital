@@ -88,4 +88,10 @@ public class VantagemService {
 
         return vantagemMapper.toResponse(updatedVantagem);
     }
+
+    public void deletarVantagem(Long id) {
+        Vantagem vantagem = vantagemRepository.findById(id)
+                .orElseThrow(() -> new VantagemException("Vantagem não encontrada"));
+        vantagemRepository.delete(vantagem);
+    }
 }
