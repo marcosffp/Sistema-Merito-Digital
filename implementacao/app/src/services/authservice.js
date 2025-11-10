@@ -143,9 +143,10 @@ const authService = {
 
     try {
       const decoded = authService.decodeToken(token);
+      console.log('Token decodificado:', decoded); // Debug
       return {
         id: decoded.id,
-        email: decoded.sub,
+        email: decoded.sub || decoded.email, // Tenta sub primeiro, depois email
         role: decoded.role,
       };
     } catch (error) {

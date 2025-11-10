@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
       try {
         if (authService.isAuthenticated()) {
           const userData = authService.getUserData();
+          console.log('Dados do usuário carregados:', userData); // Debug
           setUser(userData);
           setIsAuthenticated(true);
         } else {
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, senha) => {
     try {
       const userData = await authService.login(email, senha);
+      console.log('Login realizado, dados do usuário:', userData); // Debug
       setUser(userData);
       setIsAuthenticated(true);
       return userData;
