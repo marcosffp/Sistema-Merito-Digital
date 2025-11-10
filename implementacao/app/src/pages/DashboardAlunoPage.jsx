@@ -42,7 +42,7 @@ const DashboardAlunoPage = () => {
               <p>Gerencie seu saldo de moedas estudantis</p>
             </div>
 
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/aluno/vantagens')}>
               <h3>🎁 Vantagens</h3>
               <p>Troque moedas por vantagens</p>
             </div>

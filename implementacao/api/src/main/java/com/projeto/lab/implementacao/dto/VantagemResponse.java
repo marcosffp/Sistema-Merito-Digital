@@ -6,5 +6,6 @@ public record VantagemResponse(
     String descricao,
     Double custo,
     String imagem,
-    Long empresaId
+    Long empresaId,
+    String empresaNome
 ) {}

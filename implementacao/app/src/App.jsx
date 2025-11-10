@@ -6,6 +6,7 @@ import RegisterEmpresaPage from './pages/RegisterEmpresaPage';
 import DashboardAlunoPage from './pages/DashboardAlunoPage';
 import DashboardProfessorPage from './pages/DashboardProfessorPage';
 import DashboardEmpresaPage from './pages/DashboardEmpresaPage';
+import VantagensAlunoPage from './pages/VantagensAlunoPage';
 import VantagensEmpresaPage from './pages/VantagensEmpresaPage';
 import CadastrarVantagemPage from './pages/CadastrarVantagemPage';
 import EditarVantagemPage from './pages/EditarVantagemPage';
@@ -28,6 +29,15 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['Aluno']}>
                 <DashboardAlunoPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/aluno/vantagens" 
+            element={
+              <ProtectedRoute allowedRoles={['Aluno']}>
+                <VantagensAlunoPage />
               </ProtectedRoute>
             } 
           />
