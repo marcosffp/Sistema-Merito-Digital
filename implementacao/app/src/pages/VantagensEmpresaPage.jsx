@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import vantagemService from '../services/vantagemservice';
 import VantagemCard from '../components/VantagemCard';
+import { FaArrowLeft, FaPlus, FaBox } from 'react-icons/fa';
 import styles from './VantagensEmpresaPage.module.css';
 
 const VantagensEmpresaPage = () => {
@@ -67,13 +68,13 @@ const VantagensEmpresaPage = () => {
         <header className={styles.header}>
           <div>
             <button onClick={() => navigate('/dashboard/empresa')} className={styles.backButton}>
-              ← Voltar
+              <FaArrowLeft /> Voltar
             </button>
             <h1>Minhas Vantagens</h1>
             <p>Gerencie as vantagens oferecidas pela sua empresa</p>
           </div>
           <button onClick={() => navigate('/empresa/vantagens/nova')} className={styles.addButton}>
-            ➕ Nova Vantagem
+            <FaPlus /> Nova Vantagem
           </button>
         </header>
 
@@ -85,7 +86,7 @@ const VantagensEmpresaPage = () => {
 
         {vantagens.length === 0 ? (
           <div className={styles.emptyState}>
-            <span className={styles.emptyIcon}>📦</span>
+            <FaBox className={styles.emptyIcon} />
             <h2>Nenhuma vantagem cadastrada</h2>
             <p>Comece cadastrando sua primeira vantagem!</p>
             <button onClick={() => navigate('/empresa/vantagens/nova')} className={styles.addButton}>

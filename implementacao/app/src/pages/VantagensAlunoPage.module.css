@@ -247,6 +247,7 @@
   font-size: 5rem;
   display: block;
   margin-bottom: 1.5rem;
+  color: var(--azul-primario);
 }
 
 .emptyState h2 {

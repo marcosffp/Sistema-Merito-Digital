@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { FaGift, FaCoins, FaEdit, FaTrash } from 'react-icons/fa';
 import styles from './VantagemCard.module.css';
 
 const VantagemCard = ({ vantagem, onDelete, showActions = true }) => {
@@ -15,7 +16,7 @@ const VantagemCard = ({ vantagem, onDelete, showActions = true }) => {
           <img src={vantagem.imagem} alt={vantagem.nome} className={styles.image} />
         ) : (
           <div className={styles.noImage}>
-            <span>🎁</span>
+            <FaGift />
           </div>
         )}
       </div>
@@ -25,15 +26,15 @@ const VantagemCard = ({ vantagem, onDelete, showActions = true }) => {
         <p className={styles.description}>{vantagem.descricao}</p>
         
         <div className={styles.footer}>
-          <span className={styles.price}>💰 {vantagem.custo} moedas</span>
+          <span className={styles.price}><FaCoins /> {vantagem.custo} moedas</span>
           
           {showActions && (
             <div className={styles.actions}>
               <button onClick={handleEdit} className={styles.editButton}>
-                ✏️ Editar
+                <FaEdit /> Editar
               </button>
               <button onClick={() => onDelete(vantagem.id)} className={styles.deleteButton}>
-                🗑️ Excluir
+                <FaTrash /> Excluir
               </button>
             </div>
           )}

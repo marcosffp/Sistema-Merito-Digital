@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import vantagemService from '../services/vantagemservice';
+import { FaArrowLeft } from 'react-icons/fa';
 import styles from './CadastrarVantagemPage.module.css';
 
 const CadastrarVantagemPage = () => {
@@ -68,7 +69,7 @@ const CadastrarVantagemPage = () => {
         <div className={styles.content}>
           <header className={styles.header}>
             <button onClick={() => navigate('/empresa/vantagens')} className={styles.backButton}>
-              ← Voltar
+              <FaArrowLeft /> Voltar
             </button>
             <h1>Cadastrar Nova Vantagem</h1>
             <p>Preencha os dados da vantagem</p>

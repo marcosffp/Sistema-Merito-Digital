@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { FaBook, FaCoins, FaGift, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
 
 const DashboardAlunoPage = () => {
@@ -17,7 +18,7 @@ const DashboardAlunoPage = () => {
         <header className={styles.header}>
           <h1>Dashboard do Aluno</h1>
           <button onClick={handleLogout} className={styles.logoutButton}>
-            Sair
+            <FaSignOutAlt /> Sair
           </button>
         </header>
 
@@ -33,22 +34,22 @@ const DashboardAlunoPage = () => {
 
           <div className={styles.infoCards}>
             <div className={styles.card}>
-              <h3>📚 Meus Cursos</h3>
+              <h3><FaBook /> Meus Cursos</h3>
               <p>Visualize seus cursos e progresso</p>
             </div>
 
             <div className={styles.card}>
-              <h3>💰 Minhas Moedas</h3>
+              <h3><FaCoins /> Minhas Moedas</h3>
               <p>Gerencie seu saldo de moedas estudantis</p>
             </div>
 
             <div className={styles.card} onClick={() => navigate('/aluno/vantagens')}>
-              <h3>🎁 Vantagens</h3>
+              <h3><FaGift /> Vantagens</h3>
               <p>Troque moedas por vantagens</p>
             </div>
 
             <div className={styles.card}>
-              <h3>📊 Extrato</h3>
+              <h3><FaChartBar /> Extrato</h3>
               <p>Histórico de transações</p>
             </div>
           </div>

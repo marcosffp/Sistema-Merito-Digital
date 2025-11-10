@@ -48,3 +48,9 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
+
+.icon {
+  font-size: 5rem;
+  color: #ff4444;
+  margin-bottom: 1rem;
+}

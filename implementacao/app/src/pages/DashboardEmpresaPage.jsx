@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { FaGift, FaPlus, FaBox, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
 
 const DashboardEmpresaPage = () => {
@@ -17,7 +18,7 @@ const DashboardEmpresaPage = () => {
         <header className={styles.header}>
           <h1>Dashboard da Empresa</h1>
           <button onClick={handleLogout} className={styles.logoutButton}>
-            Sair
+            <FaSignOutAlt /> Sair
           </button>
         </header>
 
@@ -33,22 +34,22 @@ const DashboardEmpresaPage = () => {
 
           <div className={styles.infoCards}>
             <div className={styles.card} onClick={() => navigate('/empresa/vantagens')}>
-              <h3>🎁 Minhas Vantagens</h3>
+              <h3><FaGift /> Minhas Vantagens</h3>
               <p>Gerencie suas vantagens cadastradas</p>
             </div>
 
             <div className={styles.card} onClick={() => navigate('/empresa/vantagens/nova')}>
-              <h3>➕ Nova Vantagem</h3>
+              <h3><FaPlus /> Nova Vantagem</h3>
               <p>Cadastre novas vantagens</p>
             </div>
 
             <div className={styles.card}>
-              <h3>📦 Resgates</h3>
+              <h3><FaBox /> Resgates</h3>
               <p>Veja os resgates realizados</p>
             </div>
 
             <div className={styles.card}>
-              <h3>📊 Estatísticas</h3>
+              <h3><FaChartBar /> Estatísticas</h3>
               <p>Acompanhe as estatísticas</p>
             </div>
           </div>

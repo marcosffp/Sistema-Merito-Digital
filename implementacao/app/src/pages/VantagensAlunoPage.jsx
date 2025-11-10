@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import vantagemService from '../services/vantagemservice';
+import { FaArrowLeft, FaCoins, FaGift, FaBuilding } from 'react-icons/fa';
 import styles from './VantagensAlunoPage.module.css';
 
 const VantagensAlunoPage = () => {
@@ -65,7 +66,7 @@ const VantagensAlunoPage = () => {
         <header className={styles.header}>
           <div>
             <button onClick={() => navigate('/dashboard/aluno')} className={styles.backButton}>
-              ← Voltar
+              <FaArrowLeft /> Voltar
             </button>
             <h1>Vantagens Disponíveis</h1>
             <p>Troque suas moedas por vantagens incríveis!</p>
@@ -75,7 +76,7 @@ const VantagensAlunoPage = () => {
         <div className={styles.filterSection}>
           <div className={styles.saldoInfo}>
             <span className={styles.saldoLabel}>Seu saldo:</span>
-            <span className={styles.saldoValue}>💰 0 moedas</span>
+            <span className={styles.saldoValue}><FaCoins /> 0 moedas</span>
           </div>
 
           <div className={styles.filterGroup}>
@@ -103,7 +104,7 @@ const VantagensAlunoPage = () => {
 
         {vantagens.length === 0 ? (
           <div className={styles.emptyState}>
-            <span className={styles.emptyIcon}>🎁</span>
+            <FaGift className={styles.emptyIcon} />
             <h2>Nenhuma vantagem disponível</h2>
             <p>Aguarde novas vantagens serem cadastradas pelas empresas parceiras!</p>
           </div>
@@ -116,7 +117,7 @@ const VantagensAlunoPage = () => {
                     <img src={vantagem.imagem} alt={vantagem.nome} className={styles.image} />
                   ) : (
                     <div className={styles.noImage}>
-                      <span>🎁</span>
+                      <FaGift />
                     </div>
                   )}
                 </div>
@@ -124,12 +125,12 @@ const VantagensAlunoPage = () => {
                 <div className={styles.content}>
                   <h3 className={styles.title}>{vantagem.nome}</h3>
                   {vantagem.empresaNome && (
-                    <p className={styles.empresa}>🏢 {vantagem.empresaNome}</p>
+                    <p className={styles.empresa}><FaBuilding /> {vantagem.empresaNome}</p>
                   )}
                   <p className={styles.description}>{vantagem.descricao}</p>
                   
                   <div className={styles.footer}>
-                    <span className={styles.price}>💰 {vantagem.custo} moedas</span>
+                    <span className={styles.price}><FaCoins /> {vantagem.custo} moedas</span>
                     <button 
                       onClick={() => handleResgatar(vantagem.id)} 
                       className={styles.resgateButton}

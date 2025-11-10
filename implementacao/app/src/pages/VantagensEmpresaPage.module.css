@@ -95,6 +95,7 @@
   font-size: 5rem;
   display: block;
   margin-bottom: 1.5rem;
+  color: var(--roxo-primario);
 }
 
 .emptyState h2 {

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { FaUsers, FaGem, FaCoins, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
 
 const DashboardProfessorPage = () => {
@@ -17,7 +18,7 @@ const DashboardProfessorPage = () => {
         <header className={styles.header}>
           <h1>Dashboard do Professor</h1>
           <button onClick={handleLogout} className={styles.logoutButton}>
-            Sair
+            <FaSignOutAlt /> Sair
           </button>
         </header>
 
@@ -33,22 +34,22 @@ const DashboardProfessorPage = () => {
 
           <div className={styles.infoCards}>
             <div className={styles.card}>
-              <h3>👥 Meus Alunos</h3>
+              <h3><FaUsers /> Meus Alunos</h3>
               <p>Gerencie seus alunos</p>
             </div>
 
             <div className={styles.card}>
-              <h3>💎 Distribuir Moedas</h3>
+              <h3><FaGem /> Distribuir Moedas</h3>
               <p>Envie moedas para os alunos</p>
             </div>
 
             <div className={styles.card}>
-              <h3>💰 Saldo Disponível</h3>
+              <h3><FaCoins /> Saldo Disponível</h3>
               <p>Consulte seu saldo de moedas</p>
             </div>
 
             <div className={styles.card}>
-              <h3>📊 Histórico</h3>
+              <h3><FaChartBar /> Histórico</h3>
               <p>Veja o histórico de distribuição</p>
             </div>
           </div>
