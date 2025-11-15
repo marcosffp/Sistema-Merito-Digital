@@ -14,8 +14,8 @@ public class ResgateMapper {
             resgate.getCupom(),
             resgate.getCodigo(),
             resgate.getValor(),
-            resgate.getAluno() != null ? resgate.getAluno().getNome() : null, // Nome do aluno
-            resgate.getVantagem() != null ? resgate.getVantagem().getNome() : null // Nome da vantagem
+            resgate.getPagador() != null ? resgate.getPagador().getNome() : null, 
+            resgate.getVantagem() != null ? resgate.getVantagem().getNome() : null
         );
     }
 }

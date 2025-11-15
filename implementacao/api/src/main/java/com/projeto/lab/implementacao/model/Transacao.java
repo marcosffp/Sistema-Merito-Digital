@@ -24,4 +24,12 @@ public abstract class Transacao implements Notificacao {
     
     @Column(nullable = false)
     private Double valor;
+
+    @ManyToOne
+    @JoinColumn(name = "pagador_id", nullable = true)
+    private Participante pagador;
+
+    @ManyToOne
+    @JoinColumn(name = "recebedor_id", nullable = true)
+    private Participante recebedor;
 }

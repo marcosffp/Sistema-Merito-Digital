@@ -1,7 +1,10 @@
 package com.projeto.lab.implementacao.service;
 
 import com.projeto.lab.implementacao.exception.ProfessorException;
+import com.projeto.lab.implementacao.model.Distribuicao;
+import com.projeto.lab.implementacao.model.Participante;
 import com.projeto.lab.implementacao.model.Professor;
+import com.projeto.lab.implementacao.repository.DistribuicaoRepository;
 import com.projeto.lab.implementacao.repository.ProfessorRepository;
 import lombok.RequiredArgsConstructor;
 import com.projeto.lab.implementacao.dto.ProfessorResumoResponse;
@@ -12,7 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +27,8 @@ public class ProfessorService {
     private static final Double MOEDAS_POR_SEMESTRE = 1000.0;
     private final PasswordEncoder passwordEncoder;
     private final ProfessorMapper professorMapper;
+    private final ParticipanteService participanteService;
+    private final DistribuicaoRepository distribuicaoRepository;
 
     public Professor criar(Professor professor) {
         professor.setSaldoMoedas(MOEDAS_POR_SEMESTRE);
@@ -44,10 +52,6 @@ public class ProfessorService {
 
     public List<Professor> listarTodos() {
         return professorRepository.findAll();
-    }
-
-    public Professor atualizar(Professor professor) {
-        return professorRepository.save(professor);
     }
 
     public List<ProfessorResumoResponse> listarTodosResumido() {
@@ -88,11 +92,9 @@ public class ProfessorService {
             professor.setSenha(passwordEncoder.encode(dto.senha()));
         }
         if (dto.cpf() != null && !dto.cpf().isBlank()) {
-            professorRepository.findByCpf(dto.cpf()).ifPresent(existingProfessor -> {
-                if (!existingProfessor.getId().equals(id)) {
-                    throw new ProfessorException("O CPF " + dto.cpf() + " já está em uso por outro professor.");
-                }
-            });
+            if (participanteService.existeParticipanteComCpf(dto.cpf())) {
+                throw new ProfessorException("O CPF " + dto.cpf() + " já está em uso por outro participante.");
+            }
             professor.setCpf(dto.cpf());
         }
         if (dto.departamento() != null && !dto.departamento().isBlank()) {
@@ -104,24 +106,51 @@ public class ProfessorService {
     }
 
     @Transactional
-    public void distribuirMoedas(Long professorId, Double valor) {
+    public void adicionarMoedasSemestre(Long professorId) {
         Professor professor = buscarPorId(professorId);
-        if (professor.getSaldoMoedas() < valor) {
-            throw new ProfessorException("Saldo insuficiente para distribuir moedas");
-        }
-        professor.setSaldoMoedas(professor.getSaldoMoedas() - valor);
+        Distribuicao distribuicao = new Distribuicao();
+        distribuicao.setMotivo("Crédito semestral");
+        distribuicao.setValor(MOEDAS_POR_SEMESTRE);
+        distribuicao.setData(LocalDateTime.now());
+        participanteService.atualizarSaldo(professorId, MOEDAS_POR_SEMESTRE);
+        distribuicao.setRecebedor(professor);
+
         professorRepository.save(professor);
     }
 
     @Transactional
-    public void adicionarMoedasSemestre(Long professorId) {
-        Professor professor = buscarPorId(professorId);
-        professor.setSaldoMoedas(professor.getSaldoMoedas() + MOEDAS_POR_SEMESTRE);
-        professorRepository.save(professor);
+    public void atualizarSaldoSemestral() {
+        List<Professor> professores = professorRepository.findAll();
+
+        for (Professor professor : professores) {
+            if (professor.getUltimaAtualizacaoSaldo() == null ||
+                    professor.getUltimaAtualizacaoSaldo().plusMonths(6).isBefore(LocalDate.now())) {
+                processarDistribuicaoSemestral(professor, "Crédito semestral");
+            }
+        }
     }
 
-    public Double consultarSaldo(Long professorId) {
-        Professor professor = buscarPorId(professorId);
-        return professor.getSaldoMoedas();
+    @Transactional
+    public void saldosInicializar() {
+        List<Professor> professores = professorRepository.findAll();
+
+        for (Professor professor : professores) {
+            processarDistribuicaoSemestral(professor, "Crédito inicial");
+        }
+    }
+
+    private void processarDistribuicaoSemestral(Professor professor, String motivo) {
+        Participante participante = participanteService.buscarPorId(professor.getId());
+        Distribuicao distribuicao = new Distribuicao();
+        distribuicao.setMotivo(motivo);
+        distribuicao.setValor(MOEDAS_POR_SEMESTRE);
+        distribuicao.setData(LocalDateTime.now());
+        distribuicao.setCodigo(UUID.randomUUID().toString());
+        distribuicao.setRecebedor(participante);
+
+        participanteService.atualizarSaldo(professor.getId(), MOEDAS_POR_SEMESTRE);
+        professor.setUltimaAtualizacaoSaldo(LocalDate.now());
+        professorRepository.save(professor);
+        distribuicaoRepository.save(distribuicao);
     }
 }

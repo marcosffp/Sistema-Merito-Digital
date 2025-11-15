@@ -28,17 +28,23 @@ public class ResgateService {
     private final VantagemService vantagemService;
     private final ResgateMapper resgateMapper;
     private final VantagemMapper vantagemMapper;
+    private final ParticipanteService participanteService;
 
     public ResgateResponse cadastrarResgate(ResgateRequest dto) {
-        Aluno aluno = alunoService.buscarPorId(dto.alunoId());
         Vantagem vantagem = vantagemService.buscarPorId(dto.vantagemId());
+        if (!participanteService.temSaldoSuficiente(dto.alunoId(), vantagem.getCusto())) {
+            throw new ResgateException("Saldo insuficiente para realizar o resgate");
 
+        }
+        participanteService.atualizarSaldo(dto.alunoId(), -Math.abs(vantagem.getCusto()));
+        Aluno aluno = alunoService.buscarPorId(dto.alunoId());
         Resgate resgate = new Resgate();
         resgate.setCupom(gerarCupomAleatorio());
         resgate.setCodigo(String.valueOf(System.currentTimeMillis()));
+        resgate.setPagador(aluno);
         resgate.setData(LocalDateTime.now());
         resgate.setValor(vantagem.getCusto());
-        resgate.setAluno(aluno);
+        resgate.setPagador(aluno);
         resgate.setVantagem(vantagem);
 
         Resgate salvo = resgateRepository.save(resgate);
@@ -60,10 +66,11 @@ public class ResgateService {
     }
 
     public List<ResgateResponse> listarResgatesPorAluno(Long alunoId) {
-        alunoService.buscarPorId(alunoId);
+        Aluno aluno = alunoService.buscarPorId(alunoId);
 
-        List<Resgate> resgates = resgateRepository.findAll().stream()
-                .filter(resgate -> resgate.getAluno().getId().equals(alunoId))
+        List<Resgate> resgates = aluno.getTransacoesComoPagador().stream()
+                .filter(transacao -> transacao instanceof Resgate)
+                .map(transacao -> (Resgate) transacao)
                 .collect(Collectors.toList());
 
         return resgates.stream()

@@ -18,15 +18,19 @@ public class AlunoMapper {
         return new AlunoResumoResponse(
             aluno.getNome(),
             aluno.getCurso(),
-            aluno.getInstituicao().getNome(),
+            aluno.getInstituicao() != null ? aluno.getInstituicao().getNome() : null,
             aluno.getSaldoMoedas()
         );
     }
 
     public AlunoCompletoResponse toCompletoResponse(Aluno aluno) {
         String nomeInstituicao = aluno.getInstituicao() != null ? aluno.getInstituicao().getNome() : null;
-        List<ResgateResponse> resgates = aluno.getResgates() != null
-            ? aluno.getResgates().stream().map(this::toResgateResponse).collect(Collectors.toList())
+        List<ResgateResponse> resgates = aluno.getTransacoesComoPagador() != null
+            ? aluno.getTransacoesComoPagador().stream()
+                .filter(transacao -> transacao instanceof Resgate)
+                .map(transacao -> (Resgate) transacao)
+                .map(this::toResgateResponse)
+                .collect(Collectors.toList())
             : List.of();
 
         return new AlunoCompletoResponse(
@@ -49,8 +53,8 @@ public class AlunoMapper {
             resgate.getCupom(),
             resgate.getCodigo(),
             resgate.getValor(),
-            resgate.getAluno() != null ? resgate.getAluno().getNome() : null, // Preenche o nome do aluno
-            resgate.getVantagem() != null ? resgate.getVantagem().getNome() : null // Preenche o nome da vantagem
+            resgate.getPagador() != null ? resgate.getPagador().getNome() : null, // Nome do aluno (pagador)
+            resgate.getVantagem() != null ? resgate.getVantagem().getNome() : null // Nome da vantagem
         );
     }
 }

@@ -17,7 +17,7 @@ public class ProfessorMapper {
     public ProfessorResumoResponse toResumoResponse(Professor professor) {
         return new ProfessorResumoResponse(
             professor.getNome(),
-            professor.getInstituicao().getNome(),
+            professor.getInstituicao() != null ? professor.getInstituicao().getNome() : null,
             professor.getSaldoMoedas(),
             professor.getDepartamento()
         );
@@ -25,8 +25,12 @@ public class ProfessorMapper {
 
     public ProfessorCompletoResponse toCompletoResponse(Professor professor) {
         String nomeInstituicao = professor.getInstituicao() != null ? professor.getInstituicao().getNome() : null;
-        List<DistribuicaoResponse> distribuicoes = professor.getDistribuicoes() != null
-            ? professor.getDistribuicoes().stream().map(this::toDistribuicaoResponse).collect(Collectors.toList())
+        List<DistribuicaoResponse> distribuicoes = professor.getTransacoesComoPagador() != null
+            ? professor.getTransacoesComoPagador().stream()
+                .filter(transacao -> transacao instanceof Distribuicao)
+                .map(transacao -> (Distribuicao) transacao)
+                .map(this::toDistribuicaoResponse)
+                .collect(Collectors.toList())
             : List.of();
 
         return new ProfessorCompletoResponse(
@@ -47,7 +51,7 @@ public class ProfessorMapper {
             distribuicao.getMotivo(),
             distribuicao.getData(),
             distribuicao.getValor(),
-            distribuicao.getAluno().getNome()
+            distribuicao.getRecebedor() != null ? distribuicao.getRecebedor().getNome() : null // Nome do aluno (recebedor)
         );
     }
 }

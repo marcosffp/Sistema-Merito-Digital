@@ -97,6 +97,25 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    // Handle ParticipanteException
+    @ExceptionHandler(ParticipanteException.class)
+    public ResponseEntity<Map<String, String>> handleParticipanteException(ParticipanteException ex)
+    {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Erro com Participante");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // Handle DistribuicaoException
+    @ExceptionHandler(DistribuicaoException.class)
+    public ResponseEntity<Map<String, String>> handleDistribuicaoException(DistribuicaoException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Erro com Distribuição");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     // Handle ExpiredJwtException
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<Map<String, String>> handleExpiredJwtException(ExpiredJwtException ex) {

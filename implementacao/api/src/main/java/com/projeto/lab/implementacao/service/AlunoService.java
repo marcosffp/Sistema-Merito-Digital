@@ -25,6 +25,9 @@ public class AlunoService {
     private final PasswordEncoder passwordEncoder;
     private final InstituicaoService instituicaoService;
     private final AlunoMapper alunoMapper;
+    private final ParticipanteService participanteService;
+
+     @Transactional
 
     public Aluno buscarPorId(Long id) {
         return alunoRepository.findById(id)
@@ -52,38 +55,12 @@ public class AlunoService {
                 .toList();
     }
 
-    public Aluno atualizar(Aluno aluno) {
-        return alunoRepository.save(aluno);
-    }
+
 
     public void deletar(Long id) {
         alunoRepository.deleteById(id);
     }
 
-    @Transactional
-    public void receberMoedas(Long alunoId, Double valor) {
-        Aluno aluno = alunoRepository.findById(alunoId)
-                .orElseThrow(() -> new AlunoException("Aluno não encontrado"));
-        aluno.setSaldoMoedas(aluno.getSaldoMoedas() + valor);
-        alunoRepository.save(aluno);
-    }
-
-    @Transactional
-    public void descontarMoedas(Long alunoId, Double valor) {
-        Aluno aluno = alunoRepository.findById(alunoId)
-                .orElseThrow(() -> new AlunoException("Aluno não encontrado"));
-        if (aluno.getSaldoMoedas() < valor) {
-            throw new AlunoException("Saldo insuficiente");
-        }
-        aluno.setSaldoMoedas(aluno.getSaldoMoedas() - valor);
-        alunoRepository.save(aluno);
-    }
-
-    public Double consultarSaldo(Long alunoId) {
-        Aluno aluno = alunoRepository.findById(alunoId)
-                .orElseThrow(() -> new AlunoException("Aluno não encontrado"));
-        return aluno.getSaldoMoedas();
-    }
 
     @Transactional
     public Aluno cadastrarAluno(AlunoRequest dto) {
@@ -92,9 +69,9 @@ public class AlunoService {
                 throw new AlunoException("O email " + dto.email() + " já está em uso.");
             });
 
-            alunoRepository.findByCpf(dto.cpf()).ifPresent(existingAluno -> {
-                throw new AlunoException("O CPF " + dto.cpf() + " já está em uso.");
-            });
+            if (participanteService.existeParticipanteComCpf(dto.cpf())) {
+                throw new AlunoException("O CPF " + dto.cpf() + " já está em uso por outro participante.");
+            }
 
             Aluno aluno = new Aluno();
             aluno.setNome(dto.nome());
@@ -144,13 +121,12 @@ public class AlunoService {
             aluno.setSenha(passwordEncoder.encode(dto.senha()));
         }
         if (dto.cpf() != null && !dto.cpf().isBlank()) {
-            alunoRepository.findByCpf(dto.cpf()).ifPresent(existingAluno -> {
-                if (!existingAluno.getId().equals(id)) {
-                    throw new AlunoException("O CPF " + dto.cpf() + " já está em uso por outro aluno.");
-                }
-            });
-            aluno.setCpf(dto.cpf());
+                    if (participanteService.existeParticipanteComCpf(dto.cpf())) {
+            throw new AlunoException("O CPF " + dto.cpf() + " já está em uso por outro participante.");
         }
+    }
+            aluno.setCpf(dto.cpf());
+        
         if (dto.rg() != null && !dto.rg().isBlank()) {
             aluno.setRg(dto.rg());
         }

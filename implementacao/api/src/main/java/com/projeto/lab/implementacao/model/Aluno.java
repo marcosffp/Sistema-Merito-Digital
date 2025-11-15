@@ -1,6 +1,5 @@
 package com.projeto.lab.implementacao.model;
 
-import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,7 +19,4 @@ public class Aluno extends Participante {
     private String endereco;
     
     private String curso;
-
-    @OneToMany(mappedBy = "aluno")
-private List<Resgate> resgates;
 }

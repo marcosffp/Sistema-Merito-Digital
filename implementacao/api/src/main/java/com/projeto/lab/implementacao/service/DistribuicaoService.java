@@ -1,7 +1,8 @@
 package com.projeto.lab.implementacao.service;
 
+import com.projeto.lab.implementacao.exception.DistribuicaoException;
 import com.projeto.lab.implementacao.model.Distribuicao;
-import com.projeto.lab.implementacao.model.Professor;
+import com.projeto.lab.implementacao.model.Participante;
 import com.projeto.lab.implementacao.repository.DistribuicaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,27 +16,27 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DistribuicaoService {
     private final DistribuicaoRepository distribuicaoRepository;
-    private final ProfessorService professorService;
-    private final AlunoService alunoService;
+    private final ParticipanteService participanteService;
 
     @Transactional
-    public Distribuicao distribuirMoedas(Long professorId, Long alunoId, Double valor, String motivo) {
-        Professor professor = professorService.buscarPorId(professorId);
+    public Distribuicao cadastrarDistribuicao(Long professorId, Long alunoId, Double valor, String motivo) {
+        Participante participanteProfessor = participanteService.buscarPorId(professorId);
+        Participante participanteAluno = participanteService.buscarPorId(alunoId);
 
-        if (professor.getSaldoMoedas() < valor) {
-            throw new RuntimeException("Saldo insuficiente");
+        if (participanteProfessor.getSaldoMoedas() < valor) {
+            throw new DistribuicaoException("Saldo insuficiente para distribuir moedas");
         }
 
-
-        professorService.distribuirMoedas(professorId, valor);
-
-        alunoService.receberMoedas(alunoId, valor);
+        participanteService.atualizarSaldo(alunoId, valor);
+        participanteService.atualizarSaldo(professorId, -Math.abs(valor));
 
         Distribuicao distribuicao = new Distribuicao();
         distribuicao.setCodigo(UUID.randomUUID().toString());
         distribuicao.setData(LocalDateTime.now());
         distribuicao.setValor(valor);
         distribuicao.setMotivo(motivo);
+        distribuicao.setRecebedor(participanteAluno);
+        distribuicao.setPagador(participanteProfessor);
 
         Distribuicao salva = distribuicaoRepository.save(distribuicao);
 

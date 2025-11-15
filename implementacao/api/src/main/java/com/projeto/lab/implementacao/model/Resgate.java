@@ -16,10 +16,6 @@ public class Resgate extends Transacao {
     private String cupom;
 
     @ManyToOne
-    @JoinColumn(name = "aluno_id", nullable = false)
-    private Aluno aluno;
-
-    @ManyToOne
     @JoinColumn(name = "vantagem_id", nullable = false)
     private Vantagem vantagem;
 
