@@ -87,11 +87,19 @@
 
 #### Diagrama de Sequência de Gestão de Vantagem
 
-![SequenceDiagram_AdvantageManagement](/projeto/DiagramaDeSequencia_GestaoDeVantagem.drawio.svg)
+![SequenceDiagram_AdvantageManagement](/projeto/DiagramaDeSequencia_GestaoDeVantagem.svg)
 
 #### Diagrama de Sequência de Visualizar Vantagens
 
-![SequenceDiagram_GetAdvantages](/projeto/DiagramaDeSequencia_VisualizarVantagens.drawio.svg)
+![SequenceDiagram_GetAdvantages](/projeto/DiagramaDeSequencia_VisualizarVantagens.svg)
+
+#### Diagrama de Sequência de Distribuição de Moedas
+
+![SequenceDiagram_SendCoins](/projeto/DiagramaDeSequencia_DistribuicaoDeMoedas.svg)
+
+#### Diagrama de Sequência de Consulta de Extrato
+
+![SequenceDiagram_GetTransactions](/projeto/DiagramaDeSequencia_ConsultarExtrato.svg)
 
 ## Definição e implementação da estratégia de acesso ao banco de dados
 
