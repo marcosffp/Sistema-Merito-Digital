@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { obterDadosProfessor, listarAlunos, distribuirMoedas } from '../services/professorService';
 import { FaGem, FaArrowLeft } from 'react-icons/fa';
-import styles from './Dashboard.module.css';
+import dashboardStyles from './Dashboard.module.css';
+import styles from './DistribuirMoedasPage.module.css';
 
 const DistribuirMoedasPage = () => {
   const navigate = useNavigate();
@@ -85,31 +86,31 @@ const DistribuirMoedasPage = () => {
   if (loading) return <div className={styles.dashboardPage}>Carregando...</div>;
 
   return (
-    <div className={styles.dashboardPage}>
-      <div className={styles.container}>
-        <header className={styles.header}>
+    <div className={dashboardStyles.dashboardPage}>
+      <div className={dashboardStyles.container}>
+        <header className={dashboardStyles.header}>
           <h1><FaGem /> Distribuir Moedas</h1>
-          <button onClick={() => navigate('/dashboard/professor')} className={styles.logoutButton}>
+          <button onClick={() => navigate('/dashboard/professor')} className={dashboardStyles.logoutButton}>
             <FaArrowLeft /> Voltar
           </button>
         </header>
 
-        <div className={styles.content}>
-          <div className={styles.welcomeCard}>
+        <div className={dashboardStyles.content}>
+          <div className={dashboardStyles.welcomeCard}>
             <h2>Saldo Disponível: {saldoProfessor.toFixed(2)} moedas</h2>
           </div>
 
-          <div className={styles.welcomeCard}>
+          <div className={dashboardStyles.welcomeCard}>
             <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>
                   Selecione o Aluno:
                 </label>
                 <select
                   value={formData.alunoId}
                   onChange={(e) => setFormData({ ...formData, alunoId: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                  className={styles.formSelect}
                 >
                   <option value="">Selecione um aluno</option>
                   {alunos.map((aluno) => (
@@ -120,8 +121,8 @@ const DistribuirMoedasPage = () => {
                 </select>
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>
                   Valor (moedas):
                 </label>
                 <input
@@ -130,12 +131,12 @@ const DistribuirMoedasPage = () => {
                   value={formData.valor}
                   onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                  className={styles.formInput}
                 />
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>
                   Motivo:
                 </label>
                 <textarea
@@ -143,24 +144,11 @@ const DistribuirMoedasPage = () => {
                   onChange={(e) => setFormData({ ...formData, motivo: e.target.value })}
                   required
                   rows="4"
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                  className={styles.formTextarea}
                 />
               </div>
 
-              <button
-                type="submit"
-                style={{
-                  width: '100%',
-                  padding: '1rem',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
-              >
+              <button type="submit" className={styles.submitButton}>
                 Distribuir Moedas
               </button>
             </form>

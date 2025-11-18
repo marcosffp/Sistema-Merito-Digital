@@ -1,0 +1,61 @@
+.saldoValor {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #667eea;
+  margin-top: 0.5rem;
+}
+
+.historicoContainer {
+  margin-top: 1rem;
+}
+
+.resgateCard {
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resgateInfo {
+  flex: 1;
+}
+
+.resgateNome {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.resgateNome strong {
+  font-size: 1.1rem;
+}
+
+.resgateDetalhes {
+  color: #666;
+  margin: 0.25rem 0;
+}
+
+.resgateValor {
+  text-align: right;
+}
+
+.valorNegativo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.valorLabel {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.emptyState {
+  color: #666;
+  margin-top: 1rem;
+}

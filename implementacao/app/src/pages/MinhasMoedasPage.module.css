@@ -1,0 +1,21 @@
+.saldoValor {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #667eea;
+  margin-top: 1rem;
+}
+
+.historicoContainer {
+  margin-top: 1rem;
+}
+
+.resgateItem {
+  padding: 1rem;
+  background: #f5f5f5;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+}
+
+.resgateItem p {
+  margin: 0.25rem 0;
+}

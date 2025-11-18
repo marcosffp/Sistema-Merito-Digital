@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { obterExtratoProfessor } from '../services/professorService';
 import { FaChartBar, FaArrowLeft, FaCoins, FaGem, FaArrowUp } from 'react-icons/fa';
-import styles from './Dashboard.module.css';
+import dashboardStyles from './Dashboard.module.css';
+import styles from './ExtratoProfessorPage.module.css';
 
 const ExtratoProfessorPage = () => {
   const navigate = useNavigate();
@@ -30,55 +31,49 @@ const ExtratoProfessorPage = () => {
   if (loading) return <div className={styles.dashboardPage}>Carregando...</div>;
 
   return (
-    <div className={styles.dashboardPage}>
-      <div className={styles.container}>
-        <header className={styles.header}>
+    <div className={dashboardStyles.dashboardPage}>
+      <div className={dashboardStyles.container}>
+        <header className={dashboardStyles.header}>
           <h1><FaChartBar /> Histórico de Distribuições</h1>
-          <button onClick={() => navigate('/dashboard/professor')} className={styles.logoutButton}>
+          <button onClick={() => navigate('/dashboard/professor')} className={dashboardStyles.logoutButton}>
             <FaArrowLeft /> Voltar
           </button>
         </header>
 
-        <div className={styles.content}>
-          <div className={styles.welcomeCard}>
+        <div className={dashboardStyles.content}>
+          <div className={dashboardStyles.welcomeCard}>
             <h2><FaCoins /> Saldo Disponível</h2>
-            <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#667eea', marginTop: '0.5rem' }}>
+            <div className={styles.saldoValor}>
               {extratoData?.saldoMoedas?.toFixed(2)} moedas
             </div>
           </div>
 
           {extratoData?.distribuicoes && extratoData.distribuicoes.length > 0 ? (
-            <div className={styles.welcomeCard}>
+            <div className={dashboardStyles.welcomeCard}>
               <h2><FaGem /> Histórico de Distribuições</h2>
-              <div style={{ marginTop: '1rem' }}>
+              <div className={styles.historicoContainer}>
                 {extratoData.distribuicoes
                   .sort((a, b) => new Date(b.data) - new Date(a.data))
                   .map((dist) => (
-                    <div key={dist.id} style={{ 
-                      padding: '1.25rem', 
-                      background: '#fff',
-                      border: '1px solid #e0e0e0',
-                      marginBottom: '0.75rem',
-                      borderRadius: '8px'
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <div key={dist.id} className={styles.transacaoCard}>
+                      <div className={styles.transacaoHeader}>
+                        <div className={styles.transacaoInfo}>
+                          <div className={styles.alunoNome}>
                             <FaArrowUp style={{ color: '#27ae60' }} />
-                            <strong style={{ fontSize: '1.1rem' }}>{dist.nomeAluno}</strong>
+                            <strong>{dist.nomeAluno}</strong>
                           </div>
-                          <p style={{ color: '#666', margin: '0.25rem 0', fontSize: '0.9rem' }}>
+                          <p className={styles.transacaoMotivo}>
                             <strong>Motivo:</strong> {dist.motivo}
                           </p>
-                          <p style={{ color: '#999', margin: '0.25rem 0', fontSize: '0.85rem' }}>
+                          <p className={styles.transacaoData}>
                             {new Date(dist.data).toLocaleString('pt-BR')}
                           </p>
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#27ae60' }}>
+                        <div className={styles.transacaoValor}>
+                          <div className={styles.valorPositivo}>
                             + {dist.valor.toFixed(2)}
                           </div>
-                          <div style={{ fontSize: '0.85rem', color: '#999' }}>moedas</div>
+                          <div className={styles.valorLabel}>moedas</div>
                         </div>
                       </div>
                     </div>
@@ -86,9 +81,9 @@ const ExtratoProfessorPage = () => {
               </div>
             </div>
           ) : (
-            <div className={styles.welcomeCard}>
+            <div className={dashboardStyles.welcomeCard}>
               <h2>Nenhuma distribuição encontrada</h2>
-              <p style={{ color: '#666', marginTop: '1rem' }}>
+              <p className={styles.emptyState}>
                 Você ainda não realizou nenhuma distribuição de moedas.
               </p>
             </div>
