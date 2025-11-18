@@ -41,7 +41,6 @@ const AuthForm = ({ onSuccess }) => {
     <form className={styles.authForm} onSubmit={handleSubmit}>
       <div className={styles.formHeader}>
         <h2>Login</h2>
-        <p>Acesse sua conta</p>
       </div>
 
       {error && (

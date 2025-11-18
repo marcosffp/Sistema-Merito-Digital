@@ -31,7 +31,7 @@ const MeusAlunosPage = () => {
     <div className={styles.dashboardPage}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1><FaUsers />Alunos</h1>
+          <h1><FaUsers /> Visualizar Alunos</h1>
           <button onClick={() => navigate('/dashboard/professor')} className={styles.logoutButton}>
             <FaArrowLeft /> Voltar
           </button>

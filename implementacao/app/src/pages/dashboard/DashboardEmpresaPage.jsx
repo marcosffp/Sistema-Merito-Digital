@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FaGift, FaPlus, FaBox, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
+import { FaGift, FaPlus, FaBox, FaChartBar, FaSignOutAlt, FaEnvelope, FaBuilding } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
+import { FaBoxArchive } from "react-icons/fa6";
+
 
 const DashboardEmpresaPage = () => {
   const navigate = useNavigate();
@@ -24,11 +26,20 @@ const DashboardEmpresaPage = () => {
 
         <div className={styles.content}>
           <div className={styles.welcomeCard}>
-            <h2>Bem-vindo(a)!</h2>
+            <h2>Bem-vindo(a), Empresa!</h2>
             <div className={styles.userInfo}>
-              <p><strong>Email:</strong> {user?.email}</p>
-              <p><strong>Tipo de Usuário:</strong> {user?.role}</p>
-              <p><strong>ID:</strong> {user?.id}</p>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>
+                  <FaEnvelope /> Email
+                </span>
+                <span className={styles.infoValue}>{user?.email}</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>
+                  <FaBuilding /> Tipo de Conta
+                </span>
+                <span className={styles.infoValue}>{user?.role}</span>
+              </div>
             </div>
           </div>
 
@@ -44,13 +55,8 @@ const DashboardEmpresaPage = () => {
             </div>
 
             <div className={styles.card}>
-              <h3><FaBox /> Resgates</h3>
+              <h3><FaBoxArchive /> Resgates</h3>
               <p>Veja os resgates realizados</p>
-            </div>
-
-            <div className={styles.card}>
-              <h3><FaChartBar /> Estatísticas</h3>
-              <p>Acompanhe as estatísticas</p>
             </div>
           </div>
         </div>
