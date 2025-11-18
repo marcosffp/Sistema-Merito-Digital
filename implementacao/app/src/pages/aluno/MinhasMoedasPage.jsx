@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { obterDadosAluno } from '../services/alunoService';
+import { useAuth } from '../../context/AuthContext';
+import { obterDadosAluno } from '../../services/alunoService';
 import { FaCoins, FaArrowLeft, FaHistory } from 'react-icons/fa';
-import dashboardStyles from './Dashboard.module.css';
+import dashboardStyles from '../dashboard/Dashboard.module.css';
 import styles from './MinhasMoedasPage.module.css';
 
 const MinhasMoedasPage = () => {

@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { FaGift, FaPlus, FaBox, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
+import { FaBook, FaCoins, FaGift, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
 
-const DashboardEmpresaPage = () => {
+const DashboardAlunoPage = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
@@ -16,7 +16,7 @@ const DashboardEmpresaPage = () => {
     <div className={styles.dashboardPage}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1>Dashboard da Empresa</h1>
+          <h1>Dashboard do Aluno</h1>
           <button onClick={handleLogout} className={styles.logoutButton}>
             <FaSignOutAlt /> Sair
           </button>
@@ -33,24 +33,24 @@ const DashboardEmpresaPage = () => {
           </div>
 
           <div className={styles.infoCards}>
-            <div className={styles.card} onClick={() => navigate('/empresa/vantagens')}>
-              <h3><FaGift /> Minhas Vantagens</h3>
-              <p>Gerencie suas vantagens cadastradas</p>
-            </div>
-
-            <div className={styles.card} onClick={() => navigate('/empresa/vantagens/nova')}>
-              <h3><FaPlus /> Nova Vantagem</h3>
-              <p>Cadastre novas vantagens</p>
-            </div>
-
             <div className={styles.card}>
-              <h3><FaBox /> Resgates</h3>
-              <p>Veja os resgates realizados</p>
+              <h3><FaBook /> Meus Cursos</h3>
+              <p>Visualize seus cursos e progresso</p>
             </div>
 
-            <div className={styles.card}>
-              <h3><FaChartBar /> Estatísticas</h3>
-              <p>Acompanhe as estatísticas</p>
+            <div className={styles.card} onClick={() => navigate('/aluno/moedas')}>
+              <h3><FaCoins /> Minhas Moedas</h3>
+              <p>Gerencie seu saldo de moedas estudantis</p>
+            </div>
+
+            <div className={styles.card} onClick={() => navigate('/aluno/vantagens')}>
+              <h3><FaGift /> Vantagens</h3>
+              <p>Troque moedas por vantagens</p>
+            </div>
+
+            <div className={styles.card} onClick={() => navigate('/aluno/extrato')}>
+              <h3><FaChartBar /> Extrato</h3>
+              <p>Histórico de transações</p>
             </div>
           </div>
         </div>
@@ -59,4 +59,4 @@ const DashboardEmpresaPage = () => {
   );
 };
 
-export default DashboardEmpresaPage;
+export default DashboardAlunoPage;

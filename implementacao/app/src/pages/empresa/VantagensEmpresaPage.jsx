@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { listarVantagens, deletarVantagem } from '../services/vantagemService';
-import VantagemCard from '../components/VantagemCard';
+import { useAuth } from '../../context/AuthContext';
+import { listarVantagens, deletarVantagem } from '../../services/vantagemService';
+import VantagemCard from '../../components/VantagemCard';
 import { FaArrowLeft, FaPlus, FaBox } from 'react-icons/fa';
 import styles from './VantagensEmpresaPage.module.css';
 

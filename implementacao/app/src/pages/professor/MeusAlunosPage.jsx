@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { listarAlunos } from '../services/professorService';
+import { listarAlunos } from '../../services/professorService';
 import { FaUsers, FaArrowLeft } from 'react-icons/fa';
-import styles from './Dashboard.module.css';
+import styles from '../dashboard/Dashboard.module.css';
 
 const MeusAlunosPage = () => {
   const navigate = useNavigate();

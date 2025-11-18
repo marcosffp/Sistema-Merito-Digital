@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { obterExtratoAluno } from '../services/alunoService';
+import { useAuth } from '../../context/AuthContext';
+import { obterExtratoAluno } from '../../services/alunoService';
 import { FaChartBar, FaArrowLeft, FaCoins, FaGift, FaArrowDown } from 'react-icons/fa';
-import dashboardStyles from './Dashboard.module.css';
+import dashboardStyles from '../dashboard/Dashboard.module.css';
 import styles from './ExtratoAlunoPage.module.css';
 
 const ExtratoAlunoPage = () => {

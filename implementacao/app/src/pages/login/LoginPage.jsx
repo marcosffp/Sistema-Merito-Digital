@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useEffect } from 'react';
-import AuthForm from '../components/AuthForm';
+import AuthForm from '../../components/AuthForm';
 import styles from './LoginPage.module.css';
 
 const LoginPage = () => {

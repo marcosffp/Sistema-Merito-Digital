@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { maskCPF, maskRG, removeMask } from '../utils/masks';
-import styles from './RegisterAlunoPage.module.css';
+import { useAuth } from '../../context/AuthContext';
+import { maskCNPJ, removeMask } from '../../utils/masks';
+import styles from './RegisterEmpresaPage.module.css';
 
-const RegisterAlunoPage = () => {
+const RegisterEmpresaPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -14,22 +14,17 @@ const RegisterAlunoPage = () => {
     email: '',
     senha: '',
     confirmarSenha: '',
-    cpf: '',
-    rg: '',
-    endereco: '',
-    curso: '',
-    instituicao: ''
+    cnpj: '',
+    endereco: ''
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     let maskedValue = value;
 
-    // Aplica máscaras conforme o campo
-    if (name === 'cpf') {
-      maskedValue = maskCPF(value);
-    } else if (name === 'rg') {
-      maskedValue = maskRG(value);
+    // Aplica máscara para CNPJ
+    if (name === 'cnpj') {
+      maskedValue = maskCNPJ(value);
     }
 
     setFormData((prev) => ({
@@ -58,15 +53,14 @@ const RegisterAlunoPage = () => {
     try {
       const { confirmarSenha, ...dataToSend } = formData;
       
-      // Remove máscaras antes de enviar
+      // Remove máscara antes de enviar
       const dataWithoutMasks = {
         ...dataToSend,
-        cpf: removeMask(dataToSend.cpf),
-        rg: removeMask(dataToSend.rg)
+        cnpj: removeMask(dataToSend.cnpj)
       };
 
-      await register(dataWithoutMasks, 'aluno');
-      navigate('/dashboard/aluno');
+      await register(dataWithoutMasks, 'empresa');
+      navigate('/dashboard/empresa');
     } catch (err) {
       setError(err || 'Erro ao realizar cadastro. Tente novamente.');
     } finally {
@@ -85,8 +79,8 @@ const RegisterAlunoPage = () => {
             >
               ← Voltar ao Login
             </button>
-            <h1>Cadastro de Aluno</h1>
-            <p>Preencha os dados abaixo para criar sua conta</p>
+            <h1>Cadastro de Empresa</h1>
+            <p>Preencha os dados da sua empresa para criar uma conta</p>
           </div>
 
           <form className={styles.registerForm} onSubmit={handleSubmit}>
@@ -96,90 +90,47 @@ const RegisterAlunoPage = () => {
               </div>
             )}
 
+            <div className={styles.formGroup}>
+              <label htmlFor="nome">Nome da Empresa *</label>
+              <input
+                type="text"
+                id="nome"
+                name="nome"
+                value={formData.nome}
+                onChange={handleChange}
+                placeholder="Razão social ou nome fantasia"
+                required
+                disabled={loading}
+              />
+            </div>
+
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label htmlFor="nome">Nome Completo *</label>
-                <input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  placeholder="Seu nome completo"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="email">E-mail *</label>
+                <label htmlFor="email">E-mail Corporativo *</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="seu@email.com"
+                  placeholder="contato@empresa.com"
                   required
                   disabled={loading}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="cpf">CPF *</label>
+                <label htmlFor="cnpj">CNPJ *</label>
                 <input
                   type="text"
-                  id="cpf"
-                  name="cpf"
-                  value={formData.cpf}
+                  id="cnpj"
+                  name="cnpj"
+                  value={formData.cnpj}
                   onChange={handleChange}
-                  placeholder="000.000.000-00"
+                  placeholder="00.000.000/0000-00"
                   required
                   disabled={loading}
-                  maxLength={14}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="rg">RG *</label>
-                <input
-                  type="text"
-                  id="rg"
-                  name="rg"
-                  value={formData.rg}
-                  onChange={handleChange}
-                  placeholder="00.000.000-0"
-                  required
-                  disabled={loading}
-                  maxLength={12}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="curso">Curso *</label>
-                <input
-                  type="text"
-                  id="curso"
-                  name="curso"
-                  value={formData.curso}
-                  onChange={handleChange}
-                  placeholder="Ex: Ciência da Computação"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="instituicao">Instituição *</label>
-                <input
-                  type="text"
-                  id="instituicao"
-                  name="instituicao"
-                  value={formData.instituicao}
-                  onChange={handleChange}
-                  placeholder="Nome da instituição"
-                  required
-                  disabled={loading}
+                  maxLength={18}
                 />
               </div>
             </div>
@@ -192,7 +143,7 @@ const RegisterAlunoPage = () => {
                 name="endereco"
                 value={formData.endereco}
                 onChange={handleChange}
-                placeholder="Rua, número, bairro, cidade"
+                placeholder="Rua, número, bairro, cidade, estado"
                 required
                 disabled={loading}
               />
@@ -228,6 +179,13 @@ const RegisterAlunoPage = () => {
               </div>
             </div>
 
+            <div className={styles.infoBox}>
+              <p>
+                <strong>Atenção:</strong> Ao criar uma conta como empresa, você poderá cadastrar 
+                produtos e vantagens que os alunos poderão trocar por moedas estudantis.
+              </p>
+            </div>
+
             <button 
               type="submit" 
               className={styles.submitButton}
@@ -247,4 +205,4 @@ const RegisterAlunoPage = () => {
   );
 };
 
-export default RegisterAlunoPage;
+export default RegisterEmpresaPage;

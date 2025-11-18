@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { buscarVantagemPorId, atualizarVantagem } from '../services/vantagemService';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { cadastrarVantagem } from '../../services/vantagemService';
 import { FaArrowLeft } from 'react-icons/fa';
 import styles from './CadastrarVantagemPage.module.css';
 
-const EditarVantagemPage = () => {
-  const { id } = useParams();
+const CadastrarVantagemPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
@@ -19,30 +17,6 @@ const EditarVantagemPage = () => {
     custo: '',
     imagem: null,
   });
-
-  useEffect(() => {
-    carregarVantagem();
-  }, [id]);
-
-  const carregarVantagem = async () => {
-    try {
-      setLoadingData(true);
-      const data = await buscarVantagemPorId(id);
-      setFormData({
-        nome: data.nome,
-        descricao: data.descricao || '',
-        custo: data.custo.toString(),
-        imagem: null,
-      });
-      if (data.imagem) {
-        setImagePreview(data.imagem);
-      }
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoadingData(false);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,8 +53,8 @@ const EditarVantagemPage = () => {
         imagem: formData.imagem,
       };
 
-      await atualizarVantagem(id, data);
-      alert('Vantagem atualizada com sucesso!');
+      await cadastrarVantagem(data);
+      alert('Vantagem cadastrada com sucesso!');
       navigate('/empresa/vantagens');
     } catch (err) {
       setError(err);
@@ -88,16 +62,6 @@ const EditarVantagemPage = () => {
       setLoading(false);
     }
   };
-
-  if (loadingData) {
-    return (
-      <div className={styles.page}>
-        <div style={{ color: 'white', textAlign: 'center', paddingTop: '2rem' }}>
-          Carregando...
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.page}>
@@ -107,8 +71,8 @@ const EditarVantagemPage = () => {
             <button onClick={() => navigate('/empresa/vantagens')} className={styles.backButton}>
               <FaArrowLeft /> Voltar
             </button>
-            <h1>Editar Vantagem</h1>
-            <p>Atualize os dados da vantagem</p>
+            <h1>Cadastrar Nova Vantagem</h1>
+            <p>Preencha os dados da vantagem</p>
           </header>
 
           <form className={styles.form} onSubmit={handleSubmit}>
@@ -179,7 +143,7 @@ const EditarVantagemPage = () => {
             </div>
 
             <button type="submit" className={styles.submitButton} disabled={loading}>
-              {loading ? 'Salvando...' : 'Salvar Alterações'}
+              {loading ? 'Cadastrando...' : 'Cadastrar Vantagem'}
             </button>
           </form>
         </div>
@@ -188,4 +152,4 @@ const EditarVantagemPage = () => {
   );
 };
 
-export default EditarVantagemPage;
+export default CadastrarVantagemPage;

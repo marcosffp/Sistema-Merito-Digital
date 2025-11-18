@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { obterDadosProfessor, listarAlunos, distribuirMoedas } from '../services/professorService';
+import { useAuth } from '../../context/AuthContext';
+import { obterDadosProfessor, listarAlunos, distribuirMoedas } from '../../services/professorService';
 import { FaGem, FaArrowLeft } from 'react-icons/fa';
-import dashboardStyles from './Dashboard.module.css';
+import dashboardStyles from '../dashboard/Dashboard.module.css';
 import styles from './DistribuirMoedasPage.module.css';
 
 const DistribuirMoedasPage = () => {

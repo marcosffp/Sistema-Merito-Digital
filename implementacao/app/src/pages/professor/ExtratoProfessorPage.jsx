@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { obterExtratoProfessor } from '../services/professorService';
+import { useAuth } from '../../context/AuthContext';
+import { obterExtratoProfessor } from '../../services/professorService';
 import { FaChartBar, FaArrowLeft, FaCoins, FaGem, FaArrowUp } from 'react-icons/fa';
-import dashboardStyles from './Dashboard.module.css';
+import dashboardStyles from '../dashboard/Dashboard.module.css';
 import styles from './ExtratoProfessorPage.module.css';
 
 const ExtratoProfessorPage = () => {

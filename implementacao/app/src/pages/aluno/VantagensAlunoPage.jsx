@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { listarVantagens, resgatarVantagem } from '../services/vantagemService';
-import { obterResumoAluno } from '../services/alunoService';
+import { useAuth } from '../../context/AuthContext';
+import { listarVantagens, resgatarVantagem } from '../../services/vantagemService';
+import { obterResumoAluno } from '../../services/alunoService';
 import { FaGift, FaArrowLeft, FaCoins, FaBuilding } from 'react-icons/fa';
 import styles from './VantagensAlunoPage.module.css';
 

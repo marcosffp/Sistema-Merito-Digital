@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { FaUsers, FaGem, FaCoins, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
+import { FaGift, FaPlus, FaBox, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
 
-const DashboardProfessorPage = () => {
+const DashboardEmpresaPage = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
@@ -16,7 +16,7 @@ const DashboardProfessorPage = () => {
     <div className={styles.dashboardPage}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1>Dashboard do Professor</h1>
+          <h1>Dashboard da Empresa</h1>
           <button onClick={handleLogout} className={styles.logoutButton}>
             <FaSignOutAlt /> Sair
           </button>
@@ -24,7 +24,7 @@ const DashboardProfessorPage = () => {
 
         <div className={styles.content}>
           <div className={styles.welcomeCard}>
-            <h2>Bem-vindo(a), Professor(a)!</h2>
+            <h2>Bem-vindo(a)!</h2>
             <div className={styles.userInfo}>
               <p><strong>Email:</strong> {user?.email}</p>
               <p><strong>Tipo de Usuário:</strong> {user?.role}</p>
@@ -33,24 +33,24 @@ const DashboardProfessorPage = () => {
           </div>
 
           <div className={styles.infoCards}>
-            <div className={styles.card} onClick={() => navigate('/professor/alunos')}>
-              <h3><FaUsers /> Alunos</h3>
-              <p>Gerencie os alunos</p>
+            <div className={styles.card} onClick={() => navigate('/empresa/vantagens')}>
+              <h3><FaGift /> Minhas Vantagens</h3>
+              <p>Gerencie suas vantagens cadastradas</p>
             </div>
 
-            <div className={styles.card} onClick={() => navigate('/professor/distribuir')}>
-              <h3><FaGem /> Distribuir Moedas</h3>
-              <p>Envie moedas para os alunos</p>
+            <div className={styles.card} onClick={() => navigate('/empresa/vantagens/nova')}>
+              <h3><FaPlus /> Nova Vantagem</h3>
+              <p>Cadastre novas vantagens</p>
             </div>
 
-            <div className={styles.card} onClick={() => navigate('/professor/saldo')}>
-              <h3><FaCoins /> Saldo Disponível</h3>
-              <p>Consulte seu saldo de moedas</p>
+            <div className={styles.card}>
+              <h3><FaBox /> Resgates</h3>
+              <p>Veja os resgates realizados</p>
             </div>
 
-            <div className={styles.card} onClick={() => navigate('/professor/extrato')}>
-              <h3><FaChartBar /> Histórico</h3>
-              <p>Veja o histórico de distribuição</p>
+            <div className={styles.card}>
+              <h3><FaChartBar /> Estatísticas</h3>
+              <p>Acompanhe as estatísticas</p>
             </div>
           </div>
         </div>
@@ -59,4 +59,4 @@ const DashboardProfessorPage = () => {
   );
 };
 
-export default DashboardProfessorPage;
+export default DashboardEmpresaPage;
