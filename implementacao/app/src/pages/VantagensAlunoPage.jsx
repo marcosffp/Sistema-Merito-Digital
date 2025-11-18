@@ -1,148 +1,122 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import vantagemService from '../services/vantagemservice';
-import { FaArrowLeft, FaCoins, FaGift, FaBuilding } from 'react-icons/fa';
-import styles from './VantagensAlunoPage.module.css';
+import { listarVantagens, resgatarVantagem } from '../services/vantagemService';
+import { obterResumoAluno } from '../services/alunoService';
+import { FaGift, FaArrowLeft, FaCoins } from 'react-icons/fa';
+import styles from './Dashboard.module.css';
 
 const VantagensAlunoPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [vantagens, setVantagens] = useState([]);
+  const [saldoAluno, setSaldoAluno] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [filtroPreco, setFiltroPreco] = useState('');
 
   useEffect(() => {
-    carregarVantagens();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const [vantagensData, alunoData] = await Promise.all([
+          listarVantagens(),
+          obterResumoAluno(user.id)
+        ]);
+        setVantagens(vantagensData);
+        setSaldoAluno(alunoData.saldoMoedas);
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        alert('Erro ao carregar vantagens');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const carregarVantagens = async () => {
-    try {
-      setLoading(true);
-      const data = await vantagemService.listarTodas();
-      setVantagens(data);
-    } catch (err) {
-      console.error('Erro ao carregar vantagens:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchData();
+  }, [user.id]);
 
-  const handleFiltrarPorPreco = async () => {
-    if (!filtroPreco) {
-      carregarVantagens();
+  const handleResgatar = async (vantagemId, custo) => {
+    if (custo > saldoAluno) {
+      alert(`Saldo insuficiente. Você tem ${saldoAluno.toFixed(2)} moedas e precisa de ${custo.toFixed(2)} moedas.`);
       return;
     }
 
+    const confirmar = window.confirm(`Confirmar resgate? Serão debitadas ${custo} moedas da sua conta.`);
+    if (!confirmar) return;
+
     try {
-      setLoading(true);
-      const data = await vantagemService.listarPorCustoMaximo(parseFloat(filtroPreco));
-      setVantagens(data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
+      const resultado = await resgatarVantagem(user.id, vantagemId);
+      alert(`Resgate realizado com sucesso!\n\nCódigo: ${resultado.codigo}\nCupom: ${resultado.cupom}`);
+      
+      // Atualizar saldo
+      const alunoData = await obterResumoAluno(user.id);
+      setSaldoAluno(alunoData.saldoMoedas);
+    } catch (error) {
+      console.error('Erro ao resgatar vantagem:', error);
+      alert('Erro ao resgatar vantagem');
     }
   };
 
-  const handleResgatar = (vantagemId) => {
-    // TODO: Implementar lógica de resgate
-    alert(`Resgate da vantagem ${vantagemId} - Funcionalidade em desenvolvimento`);
-  };
-
-  if (loading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <p>Carregando vantagens...</p>
-      </div>
-    );
-  }
+  if (loading) return <div className={styles.dashboardPage}>Carregando...</div>;
 
   return (
-    <div className={styles.page}>
+    <div className={styles.dashboardPage}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <div>
-            <button onClick={() => navigate('/dashboard/aluno')} className={styles.backButton}>
-              <FaArrowLeft /> Voltar
-            </button>
-            <h1>Vantagens Disponíveis</h1>
-            <p>Troque suas moedas por vantagens incríveis!</p>
-          </div>
+          <h1><FaGift /> Vantagens Disponíveis</h1>
+          <button onClick={() => navigate('/dashboard/aluno')} className={styles.logoutButton}>
+            <FaArrowLeft /> Voltar
+          </button>
         </header>
 
-        <div className={styles.filterSection}>
-          <div className={styles.saldoInfo}>
-            <span className={styles.saldoLabel}>Seu saldo:</span>
-            <span className={styles.saldoValue}><FaCoins /> 0 moedas</span>
+        <div className={styles.content}>
+          <div className={styles.welcomeCard}>
+            <h2><FaCoins /> Seu Saldo</h2>
+            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#667eea', marginTop: '0.5rem' }}>
+              {saldoAluno.toFixed(2)} moedas
+            </div>
           </div>
 
-          <div className={styles.filterGroup}>
-            <input
-              type="number"
-              placeholder="Filtrar por preço máximo"
-              value={filtroPreco}
-              onChange={(e) => setFiltroPreco(e.target.value)}
-              className={styles.filterInput}
-            />
-            <button onClick={handleFiltrarPorPreco} className={styles.filterButton}>
-              Filtrar
-            </button>
-            <button onClick={() => { setFiltroPreco(''); carregarVantagens(); }} className={styles.clearButton}>
-              Limpar
-            </button>
-          </div>
-        </div>
-
-        {error && (
-          <div className={styles.errorMessage}>
-            {error}
-          </div>
-        )}
-
-        {vantagens.length === 0 ? (
-          <div className={styles.emptyState}>
-            <FaGift className={styles.emptyIcon} />
-            <h2>Nenhuma vantagem disponível</h2>
-            <p>Aguarde novas vantagens serem cadastradas pelas empresas parceiras!</p>
-          </div>
-        ) : (
-          <div className={styles.grid}>
-            {vantagens.map(vantagem => (
+          <div className={styles.infoCards}>
+            {vantagens.map((vantagem) => (
               <div key={vantagem.id} className={styles.card}>
-                <div className={styles.imageContainer}>
-                  {vantagem.imagem ? (
-                    <img src={vantagem.imagem} alt={vantagem.nome} className={styles.image} />
-                  ) : (
-                    <div className={styles.noImage}>
-                      <FaGift />
-                    </div>
-                  )}
-                </div>
-
-                <div className={styles.content}>
-                  <h3 className={styles.title}>{vantagem.nome}</h3>
-                  {vantagem.empresaNome && (
-                    <p className={styles.empresa}><FaBuilding /> {vantagem.empresaNome}</p>
-                  )}
-                  <p className={styles.description}>{vantagem.descricao}</p>
-                  
-                  <div className={styles.footer}>
-                    <span className={styles.price}><FaCoins /> {vantagem.custo} moedas</span>
-                    <button 
-                      onClick={() => handleResgatar(vantagem.id)} 
-                      className={styles.resgateButton}
-                    >
-                      Resgatar
-                    </button>
-                  </div>
-                </div>
+                {vantagem.imagem && (
+                  <img 
+                    src={vantagem.imagem} 
+                    alt={vantagem.nome}
+                    style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }}
+                  />
+                )}
+                <h3>{vantagem.nome}</h3>
+                <p>{vantagem.descricao}</p>
+                <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#667eea', margin: '1rem 0' }}>
+                  {vantagem.custo} moedas
+                </p>
+                <p style={{ fontSize: '0.9rem', color: '#666' }}>
+                  Empresa: {vantagem.nomeEmpresa}
+                </p>
+                <button
+                  onClick={() => handleResgatar(vantagem.id, vantagem.custo)}
+                  disabled={saldoAluno < vantagem.custo}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    marginTop: '1rem',
+                    background: saldoAluno >= vantagem.custo 
+                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                      : '#ccc',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    cursor: saldoAluno >= vantagem.custo ? 'pointer' : 'not-allowed'
+                  }}
+                >
+                  {saldoAluno >= vantagem.custo ? 'Resgatar' : 'Saldo Insuficiente'}
+                </button>
               </div>
             ))}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

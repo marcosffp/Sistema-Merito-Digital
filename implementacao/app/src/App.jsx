@@ -14,6 +14,8 @@ import MinhasMoedasPage from './pages/MinhasMoedasPage';
 import MeusAlunosPage from './pages/MeusAlunosPage';
 import DistribuirMoedasPage from './pages/DistribuirMoedasPage';
 import SaldoProfessorPage from './pages/SaldoProfessorPage';
+import ExtratoAlunoPage from './pages/ExtratoAlunoPage';
+import ExtratoProfessorPage from './pages/ExtratoProfessorPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -54,6 +56,15 @@ function App() {
               </ProtectedRoute>
             } 
           />
+
+          <Route 
+            path="/aluno/extrato" 
+            element={
+              <ProtectedRoute allowedRoles={['Aluno']}>
+                <ExtratoAlunoPage />
+              </ProtectedRoute>
+            } 
+          />
           
           {/* Rotas protegidas - Professor */}
           <Route 
@@ -88,6 +99,15 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['Professor']}>
                 <SaldoProfessorPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/professor/extrato" 
+            element={
+              <ProtectedRoute allowedRoles={['Professor']}>
+                <ExtratoProfessorPage />
               </ProtectedRoute>
             } 
           />

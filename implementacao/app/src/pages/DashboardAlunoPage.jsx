@@ -48,7 +48,7 @@ const DashboardAlunoPage = () => {
               <p>Troque moedas por vantagens</p>
             </div>
 
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/aluno/extrato')}>
               <h3><FaChartBar /> Extrato</h3>
               <p>Histórico de transações</p>
             </div>

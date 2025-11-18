@@ -25,3 +25,8 @@ export const distribuirMoedas = async (professorId, alunoId, valor, motivo) => {
     throw error;
   }
 };
+
+export const obterExtratoProfessor = async (professorId) => {
+  const response = await api.get(`/professores/${professorId}`);
+  return response.data;
+};

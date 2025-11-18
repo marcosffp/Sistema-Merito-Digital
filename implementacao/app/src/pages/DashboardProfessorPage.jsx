@@ -34,8 +34,8 @@ const DashboardProfessorPage = () => {
 
           <div className={styles.infoCards}>
             <div className={styles.card} onClick={() => navigate('/professor/alunos')}>
-              <h3><FaUsers /> Meus Alunos</h3>
-              <p>Gerencie seus alunos</p>
+              <h3><FaUsers /> Alunos</h3>
+              <p>Gerencie os alunos</p>
             </div>
 
             <div className={styles.card} onClick={() => navigate('/professor/distribuir')}>
@@ -48,7 +48,7 @@ const DashboardProfessorPage = () => {
               <p>Consulte seu saldo de moedas</p>
             </div>
 
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/professor/extrato')}>
               <h3><FaChartBar /> Histórico</h3>
               <p>Veja o histórico de distribuição</p>
             </div>

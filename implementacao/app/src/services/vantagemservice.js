@@ -1,118 +1,104 @@
 import api from './api';
 
-const vantagemService = {
-  /**
-   * Lista todas as vantagens
-   * @returns {Promise<Array>}
-   */
-  listarTodas: async () => {
-    try {
-      const response = await api.get('/vantagens');
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Erro ao listar vantagens';
-    }
-  },
-
-  /**
-   * Busca vantagem por ID
-   * @param {number} id
-   * @returns {Promise<Object>}
-   */
-  buscarPorId: async (id) => {
-    try {
-      const response = await api.get(`/vantagens/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Erro ao buscar vantagem';
-    }
-  },
-
-  /**
-   * Cadastra nova vantagem
-   * @param {Object} data - { nome, descricao, custo, empresaId, imagem }
-   * @returns {Promise<Object>}
-   */
-  cadastrar: async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append('nome', data.nome);
-      formData.append('descricao', data.descricao);
-      formData.append('custo', data.custo);
-      formData.append('empresaId', data.empresaId);
-      
-      if (data.imagem) {
-        formData.append('imagem', data.imagem);
-      }
-
-      const response = await api.post('/vantagens', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Erro ao cadastrar vantagem';
-    }
-  },
-
-  /**
-   * Atualiza vantagem existente
-   * @param {number} id
-   * @param {Object} data
-   * @returns {Promise<Object>}
-   */
-  atualizar: async (id, data) => {
-    try {
-      const formData = new FormData();
-      formData.append('nome', data.nome);
-      formData.append('descricao', data.descricao);
-      formData.append('custo', data.custo);
-      formData.append('empresaId', data.empresaId);
-      
-      if (data.imagem) {
-        formData.append('imagem', data.imagem);
-      }
-
-      const response = await api.put(`/vantagens/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Erro ao atualizar vantagem';
-    }
-  },
-
-  /**
-   * Deleta vantagem
-   * @param {number} id
-   * @returns {Promise<void>}
-   */
-  deletar: async (id) => {
-    try {
-      await api.delete(`/vantagens/${id}`);
-    } catch (error) {
-      throw error.response?.data?.message || 'Erro ao deletar vantagem';
-    }
-  },
-
-  /**
-   * Lista vantagens por custo máximo
-   * @param {number} custoMaximo
-   * @returns {Promise<Array>}
-   */
-  listarPorCustoMaximo: async (custoMaximo) => {
-    try {
-      const response = await api.get('/vantagens/custo-maximo', {
-        params: { custoMaximo },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Erro ao listar vantagens';
-    }
-  },
+/**
+ * Lista todas as vantagens
+ * @returns {Promise<Array>}
+ */
+export const listarVantagens = async () => {
+  const response = await api.get('/vantagens');
+  return response.data;
 };
 
-export default vantagemService;
+/**
+ * Busca vantagem por ID
+ * @param {number} id
+ * @returns {Promise<Object>}
+ */
+export const buscarVantagemPorId = async (id) => {
+  const response = await api.get(`/vantagens/${id}`);
+  return response.data;
+};
+
+/**
+ * Cadastra nova vantagem
+ * @param {Object} data - { nome, descricao, custo, empresaId, imagem }
+ * @returns {Promise<Object>}
+ */
+export const cadastrarVantagem = async (data) => {
+  const formData = new FormData();
+  formData.append('nome', data.nome);
+  formData.append('descricao', data.descricao);
+  formData.append('custo', data.custo);
+  formData.append('empresaId', data.empresaId);
+  
+  if (data.imagem) {
+    formData.append('imagem', data.imagem);
+  }
+
+  const response = await api.post('/vantagens', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+/**
+ * Atualiza vantagem existente
+ * @param {number} id
+ * @param {Object} data
+ * @returns {Promise<Object>}
+ */
+export const atualizarVantagem = async (id, data) => {
+  const formData = new FormData();
+  formData.append('nome', data.nome);
+  formData.append('descricao', data.descricao);
+  formData.append('custo', data.custo);
+  formData.append('empresaId', data.empresaId);
+  
+  if (data.imagem) {
+    formData.append('imagem', data.imagem);
+  }
+
+  const response = await api.put(`/vantagens/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+/**
+ * Deleta vantagem
+ * @param {number} id
+ * @returns {Promise<void>}
+ */
+export const deletarVantagem = async (id) => {
+  await api.delete(`/vantagens/${id}`);
+};
+
+/**
+ * Resgata vantagem para aluno
+ * @param {number} alunoId
+ * @param {number} vantagemId
+ * @returns {Promise<Object>}
+ */
+export const resgatarVantagem = async (alunoId, vantagemId) => {
+  const response = await api.post('/resgates', {
+    alunoId,
+    vantagemId
+  });
+  return response.data;
+};
+
+/**
+ * Lista vantagens por custo máximo
+ * @param {number} custoMaximo
+ * @returns {Promise<Array>}
+ */
+export const listarPorCustoMaximo = async (custoMaximo) => {
+  const response = await api.get('/vantagens/custo-maximo', {
+    params: { custoMaximo },
+  });
+  return response.data;
+};

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import vantagemService from '../services/vantagemservice';
+import { listarVantagens, deletarVantagem } from '../services/vantagemService';
 import VantagemCard from '../components/VantagemCard';
 import { FaArrowLeft, FaPlus, FaBox } from 'react-icons/fa';
 import styles from './VantagensEmpresaPage.module.css';
@@ -20,7 +20,7 @@ const VantagensEmpresaPage = () => {
   const carregarVantagens = async () => {
     try {
       setLoading(true);
-      const data = await vantagemService.listarTodas();
+      const data = await listarVantagens();
       console.log('Todas as vantagens:', data);
       console.log('ID da empresa logada:', user.id);
       
@@ -46,7 +46,7 @@ const VantagensEmpresaPage = () => {
     }
 
     try {
-      await vantagemService.deletar(id);
+      await deletarVantagem(id);
       setVantagens(vantagens.filter(v => v.id !== id));
       alert('Vantagem excluída com sucesso!');
     } catch (err) {

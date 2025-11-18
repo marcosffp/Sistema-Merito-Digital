@@ -9,3 +9,8 @@ export const obterResumoAluno = async (alunoId) => {
   const response = await api.get(`/alunos/${alunoId}/resumo`);
   return response.data;
 };
+
+export const obterExtratoAluno = async (alunoId) => {
+  const response = await api.get(`/alunos/${alunoId}/completo`);
+  return response.data;
+};

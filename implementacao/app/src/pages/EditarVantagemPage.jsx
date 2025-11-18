@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import vantagemService from '../services/vantagemservice';
+import { buscarVantagemPorId, atualizarVantagem } from '../services/vantagemService';
 import { FaArrowLeft } from 'react-icons/fa';
 import styles from './CadastrarVantagemPage.module.css';
 
@@ -27,7 +27,7 @@ const EditarVantagemPage = () => {
   const carregarVantagem = async () => {
     try {
       setLoadingData(true);
-      const data = await vantagemService.buscarPorId(id);
+      const data = await buscarVantagemPorId(id);
       setFormData({
         nome: data.nome,
         descricao: data.descricao || '',
@@ -79,7 +79,7 @@ const EditarVantagemPage = () => {
         imagem: formData.imagem,
       };
 
-      await vantagemService.atualizar(id, data);
+      await atualizarVantagem(id, data);
       alert('Vantagem atualizada com sucesso!');
       navigate('/empresa/vantagens');
     } catch (err) {

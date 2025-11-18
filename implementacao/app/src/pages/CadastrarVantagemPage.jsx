@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import vantagemService from '../services/vantagemservice';
+import { cadastrarVantagem } from '../services/vantagemService';
 import { FaArrowLeft } from 'react-icons/fa';
 import styles from './CadastrarVantagemPage.module.css';
 
@@ -53,7 +53,7 @@ const CadastrarVantagemPage = () => {
         imagem: formData.imagem,
       };
 
-      await vantagemService.cadastrar(data);
+      await cadastrarVantagem(data);
       alert('Vantagem cadastrada com sucesso!');
       navigate('/empresa/vantagens');
     } catch (err) {
