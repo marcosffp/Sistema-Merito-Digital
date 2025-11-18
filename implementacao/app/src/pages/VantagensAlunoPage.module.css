@@ -225,6 +225,32 @@
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
+.saldoSection {
+  margin-bottom: 2rem;
+}
+
+.saldoCard {
+  background: var(--branco);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resgateButton.disabled {
+  background: var(--cinza-escuro);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.resgateButton.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .errorMessage {
   background: #fee;
   color: #c33;

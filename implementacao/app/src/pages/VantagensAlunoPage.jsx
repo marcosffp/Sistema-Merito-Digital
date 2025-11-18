@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { listarVantagens, resgatarVantagem } from '../services/vantagemService';
 import { obterResumoAluno } from '../services/alunoService';
-import { FaGift, FaArrowLeft, FaCoins } from 'react-icons/fa';
-import styles from './Dashboard.module.css';
+import { FaGift, FaArrowLeft, FaCoins, FaBuilding } from 'react-icons/fa';
+import styles from './VantagensAlunoPage.module.css';
 
 const VantagensAlunoPage = () => {
   const navigate = useNavigate();
@@ -12,6 +12,7 @@ const VantagensAlunoPage = () => {
   const [vantagens, setVantagens] = useState([]);
   const [saldoAluno, setSaldoAluno] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +25,7 @@ const VantagensAlunoPage = () => {
         setSaldoAluno(alunoData.saldoMoedas);
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
-        alert('Erro ao carregar vantagens');
+        setError('Erro ao carregar vantagens');
       } finally {
         setLoading(false);
       }
@@ -55,68 +56,88 @@ const VantagensAlunoPage = () => {
     }
   };
 
-  if (loading) return <div className={styles.dashboardPage}>Carregando...</div>;
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <p>Carregando vantagens...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.dashboardPage}>
+    <div className={styles.page}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1><FaGift /> Vantagens Disponíveis</h1>
-          <button onClick={() => navigate('/dashboard/aluno')} className={styles.logoutButton}>
-            <FaArrowLeft /> Voltar
-          </button>
+          <div>
+            <button onClick={() => navigate('/dashboard/aluno')} className={styles.backButton}>
+              <FaArrowLeft /> Voltar
+            </button>
+            <h1>Vantagens Disponíveis</h1>
+            <p>Troque suas moedas por vantagens incríveis!</p>
+          </div>
         </header>
 
-        <div className={styles.content}>
-          <div className={styles.welcomeCard}>
-            <h2><FaCoins /> Seu Saldo</h2>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#667eea', marginTop: '0.5rem' }}>
-              {saldoAluno.toFixed(2)} moedas
-            </div>
+        <div className={styles.saldoSection}>
+          <div className={styles.saldoCard}>
+            <span className={styles.saldoLabel}>Seu saldo:</span>
+            <span className={styles.saldoValue}>
+              <FaCoins /> {saldoAluno.toFixed(2)} moedas
+            </span>
           </div>
+        </div>
 
-          <div className={styles.infoCards}>
-            {vantagens.map((vantagem) => (
+        {error && (
+          <div className={styles.errorMessage}>
+            {error}
+          </div>
+        )}
+
+        {vantagens.length === 0 ? (
+          <div className={styles.emptyState}>
+            <FaGift className={styles.emptyIcon} />
+            <h2>Nenhuma vantagem disponível</h2>
+            <p>Aguarde novas vantagens serem cadastradas pelas empresas parceiras!</p>
+          </div>
+        ) : (
+          <div className={styles.grid}>
+            {vantagens.map(vantagem => (
               <div key={vantagem.id} className={styles.card}>
-                {vantagem.imagem && (
-                  <img 
-                    src={vantagem.imagem} 
-                    alt={vantagem.nome}
-                    style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }}
-                  />
-                )}
-                <h3>{vantagem.nome}</h3>
-                <p>{vantagem.descricao}</p>
-                <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#667eea', margin: '1rem 0' }}>
-                  {vantagem.custo} moedas
-                </p>
-                <p style={{ fontSize: '0.9rem', color: '#666' }}>
-                  Empresa: {vantagem.nomeEmpresa}
-                </p>
-                <button
-                  onClick={() => handleResgatar(vantagem.id, vantagem.custo)}
-                  disabled={saldoAluno < vantagem.custo}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    marginTop: '1rem',
-                    background: saldoAluno >= vantagem.custo 
-                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                      : '#ccc',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    cursor: saldoAluno >= vantagem.custo ? 'pointer' : 'not-allowed'
-                  }}
-                >
-                  {saldoAluno >= vantagem.custo ? 'Resgatar' : 'Saldo Insuficiente'}
-                </button>
+                <div className={styles.imageContainer}>
+                  {vantagem.imagem ? (
+                    <img src={vantagem.imagem} alt={vantagem.nome} className={styles.image} />
+                  ) : (
+                    <div className={styles.noImage}>
+                      <FaGift />
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.content}>
+                  <h3 className={styles.title}>{vantagem.nome}</h3>
+                  {vantagem.nomeEmpresa && (
+                    <p className={styles.empresa}>
+                      <FaBuilding /> {vantagem.nomeEmpresa}
+                    </p>
+                  )}
+                  <p className={styles.description}>{vantagem.descricao}</p>
+                  
+                  <div className={styles.footer}>
+                    <span className={styles.price}>
+                      <FaCoins /> {vantagem.custo} moedas
+                    </span>
+                    <button 
+                      onClick={() => handleResgatar(vantagem.id, vantagem.custo)}
+                      disabled={saldoAluno < vantagem.custo}
+                      className={`${styles.resgateButton} ${saldoAluno < vantagem.custo ? styles.disabled : ''}`}
+                    >
+                      {saldoAluno >= vantagem.custo ? 'Resgatar' : 'Saldo Insuficiente'}
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

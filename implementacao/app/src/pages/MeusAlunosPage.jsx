@@ -31,7 +31,7 @@ const MeusAlunosPage = () => {
     <div className={styles.dashboardPage}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1><FaUsers /> Meus Alunos</h1>
+          <h1><FaUsers />Alunos</h1>
           <button onClick={() => navigate('/dashboard/professor')} className={styles.logoutButton}>
             <FaArrowLeft /> Voltar
           </button>
@@ -40,7 +40,7 @@ const MeusAlunosPage = () => {
         <div className={styles.content}>
           <div className={styles.infoCards}>
             {alunos.map((aluno, index) => (
-              <div key={index} className={styles.card}>
+              <div key={index} className={styles.card} style={{ cursor:"auto"}}>
                 <h3>{aluno.nome}</h3>
                 <p><strong>Curso:</strong> {aluno.curso}</p>
                 <p><strong>Instituição:</strong> {aluno.instituicao}</p>
