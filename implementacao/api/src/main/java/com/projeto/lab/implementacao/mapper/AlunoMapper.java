@@ -16,6 +16,7 @@ public class AlunoMapper {
 
     public AlunoResumoResponse toResumoResponse(Aluno aluno) {
         return new AlunoResumoResponse(
+            aluno.getId(),
             aluno.getNome(),
             aluno.getCurso(),
             aluno.getInstituicao() != null ? aluno.getInstituicao().getNome() : null,

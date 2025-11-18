@@ -10,6 +10,10 @@ import VantagensAlunoPage from './pages/VantagensAlunoPage';
 import VantagensEmpresaPage from './pages/VantagensEmpresaPage';
 import CadastrarVantagemPage from './pages/CadastrarVantagemPage';
 import EditarVantagemPage from './pages/EditarVantagemPage';
+import MinhasMoedasPage from './pages/MinhasMoedasPage';
+import MeusAlunosPage from './pages/MeusAlunosPage';
+import DistribuirMoedasPage from './pages/DistribuirMoedasPage';
+import SaldoProfessorPage from './pages/SaldoProfessorPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -41,6 +45,15 @@ function App() {
               </ProtectedRoute>
             } 
           />
+
+          <Route 
+            path="/aluno/moedas" 
+            element={
+              <ProtectedRoute allowedRoles={['Aluno']}>
+                <MinhasMoedasPage />
+              </ProtectedRoute>
+            } 
+          />
           
           {/* Rotas protegidas - Professor */}
           <Route 
@@ -48,6 +61,33 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['Professor']}>
                 <DashboardProfessorPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/professor/alunos" 
+            element={
+              <ProtectedRoute allowedRoles={['Professor']}>
+                <MeusAlunosPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/professor/distribuir" 
+            element={
+              <ProtectedRoute allowedRoles={['Professor']}>
+                <DistribuirMoedasPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/professor/saldo" 
+            element={
+              <ProtectedRoute allowedRoles={['Professor']}>
+                <SaldoProfessorPage />
               </ProtectedRoute>
             } 
           />

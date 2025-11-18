@@ -33,17 +33,17 @@ const DashboardProfessorPage = () => {
           </div>
 
           <div className={styles.infoCards}>
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/professor/alunos')}>
               <h3><FaUsers /> Meus Alunos</h3>
               <p>Gerencie seus alunos</p>
             </div>
 
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/professor/distribuir')}>
               <h3><FaGem /> Distribuir Moedas</h3>
               <p>Envie moedas para os alunos</p>
             </div>
 
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => navigate('/professor/saldo')}>
               <h3><FaCoins /> Saldo Disponível</h3>
               <p>Consulte seu saldo de moedas</p>
             </div>

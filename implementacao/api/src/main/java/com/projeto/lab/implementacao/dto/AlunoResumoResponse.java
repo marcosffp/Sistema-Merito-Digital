@@ -1,8 +1,9 @@
 package com.projeto.lab.implementacao.dto;
 
 public record AlunoResumoResponse(
+    Long id,
     String nome,
     String curso,
-    String nomeInstituicao,
+    String instituicao,
     Double saldoMoedas
 ) {}
