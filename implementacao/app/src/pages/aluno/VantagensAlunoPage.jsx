@@ -5,6 +5,7 @@ import { listarVantagens, resgatarVantagem } from '../../services/vantagemServic
 import { obterResumoAluno } from '../../services/alunoService';
 import { FaGift, FaArrowLeft, FaCoins, FaBuilding } from 'react-icons/fa';
 import styles from './VantagensAlunoPage.module.css';
+import dashboardStyles from '../dashboard/Dashboard.module.css';
 
 const VantagensAlunoPage = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const VantagensAlunoPage = () => {
     try {
       const resultado = await resgatarVantagem(user.id, vantagemId);
       alert(`Resgate realizado com sucesso!\n\nCódigo: ${resultado.codigo}\nCupom: ${resultado.cupom}`);
-      
+
       // Atualizar saldo
       const alunoData = await obterResumoAluno(user.id);
       setSaldoAluno(alunoData.saldoMoedas);
@@ -77,12 +78,10 @@ const VantagensAlunoPage = () => {
           </div>
         </header>
 
-        <div className={styles.saldoSection}>
-          <div className={styles.saldoCard}>
-            <span className={styles.saldoLabel}>Seu saldo:</span>
-            <span className={styles.saldoValue}>
-              <FaCoins /> {saldoAluno.toFixed(2)} moedas
-            </span>
+        <div className={`${dashboardStyles.welcomeCard} ${styles.visualizarSaldo}`}>
+          <h2><FaCoins /> Saldo Atual</h2>
+          <div className={styles.saldoValor}>
+            {saldoAluno.toFixed(2)} moedas
           </div>
         </div>
 
@@ -120,12 +119,12 @@ const VantagensAlunoPage = () => {
                     </p>
                   )}
                   <p className={styles.description}>{vantagem.descricao}</p>
-                  
+
                   <div className={styles.footer}>
                     <span className={styles.price}>
                       <FaCoins /> {vantagem.custo} moedas
                     </span>
-                    <button 
+                    <button
                       onClick={() => handleResgatar(vantagem.id, vantagem.custo)}
                       disabled={saldoAluno < vantagem.custo}
                       className={`${styles.resgateButton} ${saldoAluno < vantagem.custo ? styles.disabled : ''}`}

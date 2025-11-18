@@ -5,6 +5,7 @@ import { obterDadosProfessor, listarAlunos, distribuirMoedas } from '../../servi
 import { FaGem, FaArrowLeft } from 'react-icons/fa';
 import dashboardStyles from '../dashboard/Dashboard.module.css';
 import styles from './DistribuirMoedasPage.module.css';
+import { FaCoins } from 'react-icons/fa';
 
 const DistribuirMoedasPage = () => {
   const navigate = useNavigate();
@@ -97,7 +98,8 @@ const DistribuirMoedasPage = () => {
 
         <div className={dashboardStyles.content}>
           <div className={dashboardStyles.welcomeCard}>
-            <h2>Saldo Disponível: {saldoProfessor.toFixed(2)} moedas</h2>
+            <h2><FaCoins /> Saldo Disponível</h2>
+            <p className={styles.saldoValor}>{saldoProfessor.toFixed(2)} moedas</p>
           </div>
 
           <div className={dashboardStyles.welcomeCard}>

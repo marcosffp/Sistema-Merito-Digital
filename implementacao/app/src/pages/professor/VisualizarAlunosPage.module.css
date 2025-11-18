@@ -1,0 +1,7 @@
+.card {
+    cursor: auto;
+}
+
+.card:hover {
+    transform: none;
+}

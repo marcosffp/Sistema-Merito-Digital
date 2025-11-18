@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { listarAlunos } from '../../services/professorService';
 import { FaUsers, FaArrowLeft } from 'react-icons/fa';
 import styles from '../dashboard/Dashboard.module.css';
+import stylesVisualizar from './VisualizarAlunosPage.module.css';
 
 const MeusAlunosPage = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const MeusAlunosPage = () => {
         <div className={styles.content}>
           <div className={styles.infoCards}>
             {alunos.map((aluno, index) => (
-              <div key={index} className={styles.card} style={{ cursor:"auto"}}>
+              <div key={index} className={`${styles.card} ${stylesVisualizar.card}`}>
                 <h3>{aluno.nome}</h3>
                 <p><strong>Curso:</strong> {aluno.curso}</p>
                 <p><strong>Instituição:</strong> {aluno.instituicao}</p>

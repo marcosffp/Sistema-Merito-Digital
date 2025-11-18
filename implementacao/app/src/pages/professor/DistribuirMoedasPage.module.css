@@ -6,6 +6,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
+  color: var(--branco);
 }
 
 .formSelect,
@@ -34,6 +35,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: opacity 0.2s;
+  border: 1px solid var(--branco);
 }
 
 .submitButton:hover {
@@ -42,4 +44,11 @@
 
 .submitButton:active {
   opacity: 0.8;
+}
+
+.saldoValor {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  margin-top: 0.5rem;
 }
