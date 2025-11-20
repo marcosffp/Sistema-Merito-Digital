@@ -17,5 +17,8 @@ public record VantagemRequest(
     Double custo,
 
     @NotNull(message = "O ID da empresa é obrigatório.")
-    Long empresaId
+    Long empresaId,
+
+    @NotNull(message = "O estoque é obrigatório.")
+    Integer estoque
 ) {}

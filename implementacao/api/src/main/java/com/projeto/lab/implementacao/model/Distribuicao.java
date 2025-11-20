@@ -14,9 +14,4 @@ import lombok.AllArgsConstructor;
 public class Distribuicao extends Transacao {
     @Column(nullable = false, length = 500)
     private String motivo;
-
-    @Override
-    public void enviarNotificacao() {
-        // Implementação da notificação de distribuição
-    }
 }

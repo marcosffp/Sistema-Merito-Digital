@@ -15,12 +15,9 @@ public class Resgate extends Transacao {
     @Column(unique = true, nullable = false)
     private String cupom;
 
+    private Boolean utilizado;
+
     @ManyToOne
     @JoinColumn(name = "vantagem_id", nullable = false)
     private Vantagem vantagem;
-
-    @Override
-    public void enviarNotificacao() {
-        // Implementação da notificação de resgate
-    }
 }

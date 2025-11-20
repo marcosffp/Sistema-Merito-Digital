@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
+
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Transacao implements Notificacao {
+public abstract class Transacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,4 +34,6 @@ public abstract class Transacao implements Notificacao {
     @ManyToOne
     @JoinColumn(name = "recebedor_id", nullable = true)
     private Participante recebedor;
+
+
 }

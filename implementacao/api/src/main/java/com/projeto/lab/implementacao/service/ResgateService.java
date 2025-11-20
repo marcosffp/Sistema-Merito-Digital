@@ -1,5 +1,6 @@
 package com.projeto.lab.implementacao.service;
 
+import com.projeto.lab.implementacao.dto.CupomResponse;
 import com.projeto.lab.implementacao.dto.ResgateRequest;
 import com.projeto.lab.implementacao.dto.ResgateResponse;
 import com.projeto.lab.implementacao.dto.VantagemResponse;
@@ -8,15 +9,20 @@ import com.projeto.lab.implementacao.mapper.ResgateMapper;
 import com.projeto.lab.implementacao.mapper.VantagemMapper;
 import com.projeto.lab.implementacao.model.Resgate;
 import com.projeto.lab.implementacao.model.Aluno;
+import com.projeto.lab.implementacao.model.Distribuicao;
+import com.projeto.lab.implementacao.model.Participante;
 import com.projeto.lab.implementacao.model.Vantagem;
+import com.projeto.lab.implementacao.repository.DistribuicaoRepository;
 import com.projeto.lab.implementacao.repository.ResgateRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.security.SecureRandom;
 
@@ -29,7 +35,10 @@ public class ResgateService {
     private final ResgateMapper resgateMapper;
     private final VantagemMapper vantagemMapper;
     private final ParticipanteService participanteService;
+    private final EmailService emailService;
+    private final DistribuicaoRepository distribuicaoRepository;
 
+    @Transactional
     public ResgateResponse cadastrarResgate(ResgateRequest dto) {
         Vantagem vantagem = vantagemService.buscarPorId(dto.vantagemId());
         if (!participanteService.temSaldoSuficiente(dto.alunoId(), vantagem.getCusto())) {
@@ -46,10 +55,72 @@ public class ResgateService {
         resgate.setValor(vantagem.getCusto());
         resgate.setPagador(aluno);
         resgate.setVantagem(vantagem);
-
+        resgate.setUtilizado(false);
+        vantagem.setEstoque(vantagem.getEstoque() - 1);
+        if (vantagem.getEstoque() <= 0) {
+            vantagem.setDisponivel(false);
+        }
         Resgate salvo = resgateRepository.save(resgate);
+        emailService.sendEmail(aluno.getEmail(), "Confirmação de Resgate",
+                "Você resgatou a vantagem: " + vantagem.getNome() + "\nCupom: " + resgate.getCupom());
+        emailService.sendEmail(vantagem.getEmpresa().getEmail(), "Notificação de Resgate", "A vantagem "
+                + vantagem.getNome() + " foi resgatada por " + aluno.getNome() + "\nCupom: " + resgate.getCupom());
+        vantagemService.salvarVantagem(vantagem);
 
         return resgateMapper.toResponse(salvo);
+    }
+
+    public String validarCupomResgate(CupomResponse cupom) {
+        Resgate resgate = buscarResgatePorCupom(cupom.cupomParceiro());
+
+        if (!resgate.getCupom().equals(cupom.cupomAluno())) {
+            processarCupomInvalido(resgate);
+            return "Cupom inválido. O resgate foi cancelado e o valor reembolsado ao aluno.";
+        }
+
+        return "Cupom válido para a vantagem: " + resgate.getVantagem().getNome();
+    }
+
+    private Resgate buscarResgatePorCupom(String cupomParceiro) {
+        return resgateRepository.findByCupom(cupomParceiro)
+                .orElseThrow(() -> new ResgateException("Cupom inválido"));
+    }
+
+    private void processarCupomInvalido(Resgate resgate) {
+        resgate.setUtilizado(true);
+        resgateRepository.save(resgate);
+
+        Vantagem vantagem = atualizarEstoqueVantagem(resgate.getVantagem());
+        Participante participanteAluno = participanteService.buscarPorId(resgate.getPagador().getId());
+
+        reembolsarParticipante(participanteAluno, resgate, vantagem);
+        enviarEmailReembolso(participanteAluno, vantagem, resgate.getValor());
+    }
+
+    private Vantagem atualizarEstoqueVantagem(Vantagem vantagem) {
+        vantagem.setEstoque(vantagem.getEstoque() + 1);
+        vantagem.setDisponivel(true);
+        return vantagemService.salvarVantagem(vantagem);
+    }
+
+    private void reembolsarParticipante(Participante participante, Resgate resgate, Vantagem vantagem) {
+        participanteService.atualizarSaldo(participante.getId(), resgate.getValor());
+
+        Distribuicao distribuicao = new Distribuicao();
+        distribuicao.setCodigo(UUID.randomUUID().toString());
+        distribuicao.setData(LocalDateTime.now());
+        distribuicao.setValor(resgate.getValor());
+        distribuicao.setMotivo("Reembolso por cupom inválido no resgate da vantagem: " + vantagem.getNome());
+        distribuicao.setRecebedor(participante);
+
+        distribuicaoRepository.save(distribuicao);
+    }
+
+    private void enviarEmailReembolso(Participante participante, Vantagem vantagem, double valor) {
+        String assunto = "Distribuição de Moedas";
+        String mensagem = "Reembolso por cupom inválido no resgate da vantagem: " + vantagem.getNome() + "\nValor: "
+                + valor;
+        emailService.sendEmail(participante.getEmail(), assunto, mensagem);
     }
 
     private String gerarCupomAleatorio() {

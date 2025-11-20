@@ -17,6 +17,7 @@ import java.util.UUID;
 public class DistribuicaoService {
     private final DistribuicaoRepository distribuicaoRepository;
     private final ParticipanteService participanteService;
+    private final EmailService emailService;
 
     @Transactional
     public Distribuicao cadastrarDistribuicao(Long professorId, Long alunoId, Double valor, String motivo) {
@@ -40,7 +41,7 @@ public class DistribuicaoService {
 
         Distribuicao salva = distribuicaoRepository.save(distribuicao);
 
-        salva.enviarNotificacao();
+        emailService.sendEmail(participanteAluno.getEmail(), "Distribuição de Moedas", motivo + "\nValor: " + valor);
 
         return salva;
     }

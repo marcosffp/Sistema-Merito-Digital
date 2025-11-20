@@ -1,5 +1,6 @@
 package com.projeto.lab.implementacao.controller;
 
+import com.projeto.lab.implementacao.dto.CupomResponse;
 import com.projeto.lab.implementacao.dto.ResgateRequest;
 import com.projeto.lab.implementacao.dto.ResgateResponse;
 import com.projeto.lab.implementacao.dto.VantagemResponse;
@@ -14,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/resgates")
@@ -39,4 +43,12 @@ public class ResgateController {
         VantagemResponse vantagemResponse = resgateService.mostrarDetalhesVantagemPorResgate(resgateId);
         return ResponseEntity.ok(vantagemResponse);
     }
+
+    @PostMapping("/resgatar/vantagem")
+    public ResponseEntity<String> resgateVantagem(@Valid @RequestBody CupomResponse cupomResponse) {
+
+        String conteudo = resgateService.validarCupomResgate(cupomResponse);
+        return ResponseEntity.ok(conteudo);
+    }
+
 }

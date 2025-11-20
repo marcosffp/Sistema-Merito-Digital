@@ -25,6 +25,10 @@ public class Vantagem {
     
     private String imagem;
 
+    private Integer estoque;
+
+    private Boolean disponivel;
+
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;

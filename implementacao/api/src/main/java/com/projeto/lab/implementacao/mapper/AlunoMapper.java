@@ -51,7 +51,6 @@ public class AlunoMapper {
     private ResgateResponse toResgateResponse(Resgate resgate) {
         return new ResgateResponse(
             resgate.getId(),
-            resgate.getCupom(),
             resgate.getCodigo(),
             resgate.getValor(),
             resgate.getPagador() != null ? resgate.getPagador().getNome() : null, // Nome do aluno (pagador)

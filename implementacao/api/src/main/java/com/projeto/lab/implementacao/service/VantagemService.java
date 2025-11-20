@@ -35,12 +35,14 @@ public class VantagemService {
         vantagem.setDescricao(dto.descricao());
         vantagem.setCusto(dto.custo());
         vantagem.setEmpresa(empresa);
+        vantagem.setEstoque(dto.estoque());
+        vantagem.setDisponivel(dto.estoque() > 0);
         if (imagem != null && !imagem.isEmpty()) {
             String imageUrl = imageService.uploadImage(imagem, "vantagens");
             vantagem.setImagem(imageUrl);
         }
 
-        Vantagem savedVantagem = vantagemRepository.save(vantagem);
+        Vantagem savedVantagem = salvarVantagem(vantagem);
         return vantagemMapper.toResponse(savedVantagem);
     }
 
@@ -78,15 +80,19 @@ public class VantagemService {
         vantagemExistente.setDescricao(dto.descricao());
         vantagemExistente.setCusto(dto.custo());
         vantagemExistente.setEmpresa(empresa);
+        vantagemExistente.setEstoque(dto.estoque());
+        vantagemExistente.setDisponivel(dto.estoque() > 0);
 
         if (imagem != null && !imagem.isEmpty()) {
             String imageUrl = imageService.uploadImage(imagem, "vantagens");
             vantagemExistente.setImagem(imageUrl);
         }
-
-        Vantagem updatedVantagem = vantagemRepository.save(vantagemExistente);
-
+        Vantagem updatedVantagem = salvarVantagem(vantagemExistente);
         return vantagemMapper.toResponse(updatedVantagem);
+    }
+
+    public Vantagem salvarVantagem(Vantagem vantagem) {
+        return vantagemRepository.save(vantagem);
     }
 
     public void deletarVantagem(Long id) {
