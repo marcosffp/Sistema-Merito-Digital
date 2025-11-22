@@ -16,7 +16,9 @@ public class VantagemMapper {
             vantagem.getCusto(),
             vantagem.getImagem(),
             vantagem.getEmpresa() != null ? vantagem.getEmpresa().getId() : null,
-            vantagem.getEmpresa() != null ? vantagem.getEmpresa().getNome() : null
+            vantagem.getEmpresa() != null ? vantagem.getEmpresa().getNome() : null,
+            vantagem.getEstoque(),
+            vantagem.getDisponivel()
         );
     }
 }

@@ -7,5 +7,7 @@ public record VantagemResponse(
     Double custo,
     String imagem,
     Long empresaId,
-    String empresaNome
+    String empresaNome,
+    Integer estoque,
+    Boolean disponivel
 ) {}
