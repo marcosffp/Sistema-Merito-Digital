@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { obterResumoAluno } from '../../services/alunoService';
-import { FaBook, FaCoins, FaGift, FaChartBar, FaSignOutAlt, FaUser, FaEnvelope } from 'react-icons/fa';
+import { FaBook, FaCoins, FaGift, FaChartBar, FaSignOutAlt, FaUser, FaEnvelope, FaArchive } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
-import { FaBoxArchive } from "react-icons/fa6";
 
 const DashboardAlunoPage = () => {
   const navigate = useNavigate();
@@ -76,9 +75,9 @@ const DashboardAlunoPage = () => {
           </div>
 
           <div className={styles.infoCards}>
-            <div className={styles.card}>
-              <h3><FaBoxArchive /> Resgates</h3>
-              <p>Veja seus resgates realizados</p>
+            <div className={styles.card} onClick={() => navigate('/aluno/resgates')}>
+              <h3><FaArchive /> Meus Resgates</h3>
+              <p>Veja suas vantagens resgatadas</p>
             </div>
 
             <div className={styles.card} onClick={() => navigate('/aluno/vantagens')}>

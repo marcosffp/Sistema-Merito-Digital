@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FaGift, FaPlus, FaBox, FaChartBar, FaSignOutAlt, FaEnvelope, FaBuilding } from 'react-icons/fa';
+import { FaGift, FaPlus, FaSignOutAlt, FaEnvelope, FaBuilding, FaTicketAlt } from 'react-icons/fa';
 import styles from './Dashboard.module.css';
-import { FaBoxArchive } from "react-icons/fa6";
 
 
 const DashboardEmpresaPage = () => {
@@ -40,6 +39,10 @@ const DashboardEmpresaPage = () => {
                 </span>
                 <span className={styles.infoValue}>{user?.role}</span>
               </div>
+            </div>
+            
+            <div className={styles.infoAlert}>
+              <FaTicketAlt /> Você receberá emails automáticos sempre que um aluno resgatar uma vantagem
             </div>
           </div>
 

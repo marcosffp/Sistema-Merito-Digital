@@ -16,43 +16,50 @@ import ExtratoAlunoPage from './pages/aluno/ExtratoAlunoPage';
 import ExtratoProfessorPage from './pages/professor/ExtratoProfessorPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import ResgatesAlunoPage from './pages/aluno/ResgatesAlunoPage';
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/cadastro/aluno" element={<RegisterAlunoPage />} />
           <Route path="/cadastro/empresa" element={<RegisterEmpresaPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           
-          {/* Rotas protegidas - Aluno */}
-          <Route 
-            path="/dashboard/aluno" 
+          {/* Rotas do Aluno */}
+          <Route
+            path="/dashboard/aluno"
             element={
               <ProtectedRoute allowedRoles={['Aluno']}>
                 <DashboardAlunoPage />
               </ProtectedRoute>
-            } 
+            }
           />
-
-          <Route 
-            path="/aluno/vantagens" 
+          <Route
+            path="/aluno/vantagens"
             element={
               <ProtectedRoute allowedRoles={['Aluno']}>
                 <VantagensAlunoPage />
               </ProtectedRoute>
-            } 
+            }
           />
-
-          <Route 
-            path="/aluno/extrato" 
+          <Route
+            path="/aluno/extrato"
             element={
               <ProtectedRoute allowedRoles={['Aluno']}>
                 <ExtratoAlunoPage />
               </ProtectedRoute>
-            } 
+            }
+          />
+          <Route
+            path="/aluno/resgates"
+            element={
+              <ProtectedRoute allowedRoles={['Aluno']}>
+                <ResgatesAlunoPage />
+              </ProtectedRoute>
+            }
           />
           
           {/* Rotas protegidas - Professor */}
@@ -131,8 +138,8 @@ function App() {
           
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 

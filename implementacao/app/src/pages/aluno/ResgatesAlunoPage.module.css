@@ -1,0 +1,149 @@
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #fff;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  color: #ffd700;
+  margin-bottom: 1rem;
+}
+
+.emptyState h2 {
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.emptyState p {
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.goToVantagens {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.goToVantagens:hover {
+  transform: translateY(-2px);
+}
+
+.resgatesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.resgateCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.resgateCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.resgateHeader {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.resgateIcon {
+  font-size: 1.5rem;
+}
+
+.resgateHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.resgateBody {
+  padding: 1.5rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.label svg {
+  color: #667eea;
+}
+
+.value {
+  font-weight: 600;
+  color: #333;
+  font-family: 'Courier New', monospace;
+}
+
+.valorRow {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.valorLabel {
+  font-weight: 600;
+  color: #666;
+}
+
+.valorValue {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.resgateFooter {
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.footerText {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .resgatesGrid {
+    grid-template-columns: 1fr;
+  }
+}
