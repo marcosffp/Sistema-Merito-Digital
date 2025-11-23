@@ -67,6 +67,7 @@ const DistribuirMoedasPage = () => {
     }
 
     try {
+      setLoading(true);
       console.log('Dados do formulário:', {
         professorId: user.id,
         alunoId,
@@ -75,12 +76,23 @@ const DistribuirMoedasPage = () => {
       });
       
       await distribuirMoedas(user.id, alunoId, valor, formData.motivo);
-      alert('Moedas distribuídas com sucesso!');
+      
+      // Buscar nome do aluno para a mensagem
+      const alunoSelecionado = alunos.find(a => a.id === alunoId);
+      
+      alert(
+        `✅ Moedas distribuídas com sucesso!\n\n` +
+        `${valor.toFixed(2)} moedas foram enviadas para ${alunoSelecionado?.nome || 'o aluno'}.\n\n` +
+        `📧 Uma notificação por email foi enviada para o aluno.`
+      );
+      
       navigate('/dashboard/professor');
     } catch (error) {
       console.error('Erro ao distribuir moedas:', error);
       const errorMessage = error.response?.data?.message || error.response?.data || 'Erro ao distribuir moedas';
-      alert(`Erro: ${errorMessage}`);
+      alert(`❌ Erro: ${errorMessage}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,9 +162,17 @@ const DistribuirMoedasPage = () => {
                 />
               </div>
 
-              <button type="submit" className={styles.submitButton}>
-                Distribuir Moedas
+              <button 
+                type="submit" 
+                className={styles.submitButton}
+                disabled={loading}
+              >
+                {loading ? 'Enviando...' : 'Distribuir Moedas'}
               </button>
+              
+              <p className={styles.emailInfo}>
+                ℹ️ O aluno receberá uma notificação por email automaticamente
+              </p>
             </form>
           </div>
         </div>

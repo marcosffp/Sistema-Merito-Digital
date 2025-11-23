@@ -41,7 +41,14 @@ public class DistribuicaoService {
 
         Distribuicao salva = distribuicaoRepository.save(distribuicao);
 
-        emailService.sendEmail(participanteAluno.getEmail(), "Distribuição de Moedas", motivo + "\nValor: " + valor);
+        // Enviar email com template melhorado
+        emailService.enviarNotificacaoRecebimentoMoedas(
+            participanteAluno.getEmail(),
+            participanteAluno.getNome(),
+            participanteProfessor.getNome(),
+            valor,
+            motivo
+        );
 
         return salva;
     }
