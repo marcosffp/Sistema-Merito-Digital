@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { obterDadosProfessor, listarAlunos, distribuirMoedas } from '../../services/professorService';
-import { FaGem, FaArrowLeft } from 'react-icons/fa';
+import { FaGem, FaArrowLeft, FaCoins } from 'react-icons/fa';
+import Loading from '../../components/Loading';
 import dashboardStyles from '../dashboard/Dashboard.module.css';
 import styles from './DistribuirMoedasPage.module.css';
-import { FaCoins } from 'react-icons/fa';
 
 const DistribuirMoedasPage = () => {
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ const DistribuirMoedasPage = () => {
   const [alunos, setAlunos] = useState([]);
   const [saldoProfessor, setSaldoProfessor] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     alunoId: '',
     valor: '',
@@ -67,7 +68,7 @@ const DistribuirMoedasPage = () => {
     }
 
     try {
-      setLoading(true);
+      setSubmitting(true);
       console.log('Dados do formulário:', {
         professorId: user.id,
         alunoId,
@@ -92,92 +93,101 @@ const DistribuirMoedasPage = () => {
       const errorMessage = error.response?.data?.message || error.response?.data || 'Erro ao distribuir moedas';
       alert(`❌ Erro: ${errorMessage}`);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
-  if (loading) return <div className={styles.dashboardPage}>Carregando...</div>;
+  if (loading) {
+    return <Loading message="Carregando dados..." />;
+  }
 
   return (
-    <div className={dashboardStyles.dashboardPage}>
-      <div className={dashboardStyles.container}>
-        <header className={dashboardStyles.header}>
-          <h1><FaGem /> Distribuir Moedas</h1>
-          <button onClick={() => navigate('/dashboard/professor')} className={dashboardStyles.logoutButton}>
-            <FaArrowLeft /> Voltar
-          </button>
-        </header>
+    <>
+      {submitting && <Loading message="Distribuindo moedas..." />}
+      
+      <div className={dashboardStyles.dashboardPage}>
+        <div className={dashboardStyles.container}>
+          <header className={dashboardStyles.header}>
+            <h1><FaGem /> Distribuir Moedas</h1>
+            <button onClick={() => navigate('/dashboard/professor')} className={dashboardStyles.logoutButton}>
+              <FaArrowLeft /> Voltar
+            </button>
+          </header>
 
-        <div className={dashboardStyles.content}>
-          <div className={dashboardStyles.welcomeCard}>
-            <h2><FaCoins /> Saldo Disponível</h2>
-            <p className={styles.saldoValor}>{saldoProfessor.toFixed(2)} moedas</p>
-          </div>
+          <div className={dashboardStyles.content}>
+            <div className={dashboardStyles.welcomeCard}>
+              <h2><FaCoins /> Saldo Disponível</h2>
+              <p className={styles.saldoValor}>{saldoProfessor.toFixed(2)} moedas</p>
+            </div>
 
-          <div className={dashboardStyles.welcomeCard}>
-            <form onSubmit={handleSubmit}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>
-                  Selecione o Aluno:
-                </label>
-                <select
-                  value={formData.alunoId}
-                  onChange={(e) => setFormData({ ...formData, alunoId: e.target.value })}
-                  required
-                  className={styles.formSelect}
+            <div className={dashboardStyles.welcomeCard}>
+              <form onSubmit={handleSubmit}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>
+                    Selecione o Aluno:
+                  </label>
+                  <select
+                    value={formData.alunoId}
+                    onChange={(e) => setFormData({ ...formData, alunoId: e.target.value })}
+                    required
+                    className={styles.formSelect}
+                    disabled={submitting}
+                  >
+                    <option value="">Selecione um aluno</option>
+                    {alunos.map((aluno) => (
+                      <option key={aluno.id} value={aluno.id}>
+                        {aluno.nome} - {aluno.curso}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>
+                    Valor (moedas):
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.valor}
+                    onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+                    required
+                    className={styles.formInput}
+                    disabled={submitting}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>
+                    Motivo:
+                  </label>
+                  <textarea
+                    value={formData.motivo}
+                    onChange={(e) => setFormData({ ...formData, motivo: e.target.value })}
+                    required
+                    rows="4"
+                    className={styles.formTextarea}
+                    disabled={submitting}
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className={styles.submitButton}
+                  disabled={submitting}
                 >
-                  <option value="">Selecione um aluno</option>
-                  {alunos.map((aluno) => (
-                    <option key={aluno.id} value={aluno.id}>
-                      {aluno.nome} - {aluno.curso}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>
-                  Valor (moedas):
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.valor}
-                  onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-                  required
-                  className={styles.formInput}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>
-                  Motivo:
-                </label>
-                <textarea
-                  value={formData.motivo}
-                  onChange={(e) => setFormData({ ...formData, motivo: e.target.value })}
-                  required
-                  rows="4"
-                  className={styles.formTextarea}
-                />
-              </div>
-
-              <button 
-                type="submit" 
-                className={styles.submitButton}
-                disabled={loading}
-              >
-                {loading ? 'Enviando...' : 'Distribuir Moedas'}
-              </button>
-              
-              <p className={styles.emailInfo}>
-                ℹ️ O aluno receberá uma notificação por email automaticamente
-              </p>
-            </form>
+                  {submitting ? 'Enviando...' : 'Distribuir Moedas'}
+                </button>
+                
+                <p className={styles.emailInfo}>
+                  ℹ️ O aluno receberá uma notificação por email automaticamente
+                </p>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

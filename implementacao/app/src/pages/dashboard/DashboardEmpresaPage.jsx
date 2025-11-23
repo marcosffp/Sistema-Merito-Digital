@@ -53,11 +53,6 @@ const DashboardEmpresaPage = () => {
               <h3><FaPlus /> Nova Vantagem</h3>
               <p>Cadastre novas vantagens</p>
             </div>
-
-            <div className={styles.card}>
-              <h3><FaBoxArchive /> Resgates</h3>
-              <p>Veja os resgates realizados</p>
-            </div>
           </div>
         </div>
       </div>

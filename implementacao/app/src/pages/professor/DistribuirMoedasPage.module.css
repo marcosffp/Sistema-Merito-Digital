@@ -49,6 +49,7 @@
 .submitButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  background: #ccc;
 }
 
 .saldoValor {
@@ -67,4 +68,12 @@
   color: #1565c0;
   font-size: 0.9rem;
   text-align: center;
+}
+
+.formSelect:disabled,
+.formInput:disabled,
+.formTextarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f5f5f5;
 }
