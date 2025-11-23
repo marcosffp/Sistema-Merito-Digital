@@ -24,15 +24,16 @@ export const buscarVantagemPorId = async (id) => {
  * @param {Object} data - { nome, descricao, custo, empresaId, imagem }
  * @returns {Promise<Object>}
  */
-export const cadastrarVantagem = async (data) => {
+export const cadastrarVantagem = async (dados) => {
   const formData = new FormData();
-  formData.append('nome', data.nome);
-  formData.append('descricao', data.descricao);
-  formData.append('custo', data.custo);
-  formData.append('empresaId', data.empresaId);
+  formData.append('nome', dados.nome);
+  formData.append('descricao', dados.descricao || '');
+  formData.append('custo', dados.custo);
+  formData.append('estoque', dados.estoque);
+  formData.append('empresaId', dados.empresaId);
   
-  if (data.imagem) {
-    formData.append('imagem', data.imagem);
+  if (dados.imagem) {
+    formData.append('imagem', dados.imagem);
   }
 
   const response = await api.post('/vantagens', formData, {
@@ -49,15 +50,16 @@ export const cadastrarVantagem = async (data) => {
  * @param {Object} data
  * @returns {Promise<Object>}
  */
-export const atualizarVantagem = async (id, data) => {
+export const atualizarVantagem = async (id, dados) => {
   const formData = new FormData();
-  formData.append('nome', data.nome);
-  formData.append('descricao', data.descricao);
-  formData.append('custo', data.custo);
-  formData.append('empresaId', data.empresaId);
+  formData.append('nome', dados.nome);
+  formData.append('descricao', dados.descricao || '');
+  formData.append('custo', dados.custo);
+  formData.append('estoque', dados.estoque);
+  formData.append('empresaId', dados.empresaId);
   
-  if (data.imagem) {
-    formData.append('imagem', data.imagem);
+  if (dados.imagem) {
+    formData.append('imagem', dados.imagem);
   }
 
   const response = await api.put(`/vantagens/${id}`, formData, {
@@ -74,7 +76,8 @@ export const atualizarVantagem = async (id, data) => {
  * @returns {Promise<void>}
  */
 export const deletarVantagem = async (id) => {
-  await api.delete(`/vantagens/${id}`);
+  const response = await api.delete(`/vantagens/${id}`);
+  return response.data;
 };
 
 /**
@@ -84,10 +87,7 @@ export const deletarVantagem = async (id) => {
  * @returns {Promise<Object>}
  */
 export const resgatarVantagem = async (alunoId, vantagemId) => {
-  const response = await api.post('/resgates', {
-    alunoId,
-    vantagemId
-  });
+  const response = await api.post('/resgates', { alunoId, vantagemId });
   return response.data;
 };
 

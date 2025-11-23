@@ -202,8 +202,6 @@
 .description {
   color: var(--cinza-escuro);
   font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
   min-height: 60px;
 }
 
@@ -307,6 +305,28 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: var(--branco);
   font-size: 1.2rem;
+}
+
+.lowStockBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f39c12;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.estoque {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {

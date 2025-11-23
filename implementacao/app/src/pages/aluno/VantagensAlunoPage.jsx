@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { listarVantagens, resgatarVantagem } from '../../services/vantagemService';
 import { obterResumoAluno } from '../../services/alunoService';
-import { FaGift, FaArrowLeft, FaCoins, FaBuilding } from 'react-icons/fa';
+import { FaGift, FaArrowLeft, FaCoins, FaBuilding, FaExclamationTriangle } from 'react-icons/fa';
 import styles from './VantagensAlunoPage.module.css';
 import dashboardStyles from '../dashboard/Dashboard.module.css';
 
@@ -22,7 +22,9 @@ const VantagensAlunoPage = () => {
           listarVantagens(),
           obterResumoAluno(user.id)
         ]);
-        setVantagens(vantagensData);
+        // Filtrar apenas vantagens disponíveis
+        const vantagensDisponiveis = vantagensData.filter(v => v.disponivel && v.estoque > 0);
+        setVantagens(vantagensDisponiveis);
         setSaldoAluno(alunoData.saldoMoedas);
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -35,7 +37,12 @@ const VantagensAlunoPage = () => {
     fetchData();
   }, [user.id]);
 
-  const handleResgatar = async (vantagemId, custo) => {
+  const handleResgatar = async (vantagemId, custo, estoque) => {
+    if (estoque <= 0) {
+      alert('Esta vantagem está sem estoque no momento.');
+      return;
+    }
+
     if (custo > saldoAluno) {
       alert(`Saldo insuficiente. Você tem ${saldoAluno.toFixed(2)} moedas e precisa de ${custo.toFixed(2)} moedas.`);
       return;
@@ -48,13 +55,31 @@ const VantagensAlunoPage = () => {
       const resultado = await resgatarVantagem(user.id, vantagemId);
       alert(`Resgate realizado com sucesso!\n\nCódigo: ${resultado.codigo}\nCupom: ${resultado.cupom}`);
 
-      // Atualizar saldo
-      const alunoData = await obterResumoAluno(user.id);
+      // Atualizar dados
+      const [vantagensData, alunoData] = await Promise.all([
+        listarVantagens(),
+        obterResumoAluno(user.id)
+      ]);
+      const vantagensDisponiveis = vantagensData.filter(v => v.disponivel && v.estoque > 0);
+      setVantagens(vantagensDisponiveis);
       setSaldoAluno(alunoData.saldoMoedas);
     } catch (error) {
       console.error('Erro ao resgatar vantagem:', error);
-      alert('Erro ao resgatar vantagem');
+      alert(error?.response?.data?.message || 'Erro ao resgatar vantagem');
     }
+  };
+
+  const podeResgatar = (vantagem) => {
+    return vantagem.disponivel && 
+           vantagem.estoque > 0 && 
+           saldoAluno >= vantagem.custo;
+  };
+
+  const getButtonText = (vantagem) => {
+    if (!vantagem.disponivel) return 'Indisponível';
+    if (vantagem.estoque <= 0) return 'Sem Estoque';
+    if (saldoAluno < vantagem.custo) return 'Saldo Insuficiente';
+    return 'Resgatar';
   };
 
   if (loading) {
@@ -109,27 +134,36 @@ const VantagensAlunoPage = () => {
                       <FaGift />
                     </div>
                   )}
+                  {vantagem.estoque <= 5 && vantagem.estoque > 0 && (
+                    <div className={styles.lowStockBadge}>
+                      <FaExclamationTriangle /> Últimas unidades!
+                    </div>
+                  )}
                 </div>
 
                 <div className={styles.content}>
                   <h3 className={styles.title}>{vantagem.nome}</h3>
-                  {vantagem.nomeEmpresa && (
+                  {vantagem.empresaNome && (
                     <p className={styles.empresa}>
-                      <FaBuilding /> {vantagem.nomeEmpresa}
+                      <FaBuilding /> {vantagem.empresaNome}
                     </p>
                   )}
                   <p className={styles.description}>{vantagem.descricao}</p>
+                  
+                  <p className={styles.estoque}>
+                    <strong>Estoque:</strong> {vantagem.estoque} {vantagem.estoque === 1 ? 'unidade' : 'unidades'}
+                  </p>
 
                   <div className={styles.footer}>
                     <span className={styles.price}>
                       <FaCoins /> {vantagem.custo} moedas
                     </span>
                     <button
-                      onClick={() => handleResgatar(vantagem.id, vantagem.custo)}
-                      disabled={saldoAluno < vantagem.custo}
-                      className={`${styles.resgateButton} ${saldoAluno < vantagem.custo ? styles.disabled : ''}`}
+                      onClick={() => handleResgatar(vantagem.id, vantagem.custo, vantagem.estoque)}
+                      disabled={!podeResgatar(vantagem)}
+                      className={`${styles.resgateButton} ${!podeResgatar(vantagem) ? styles.disabled : ''}`}
                     >
-                      {saldoAluno >= vantagem.custo ? 'Resgatar' : 'Saldo Insuficiente'}
+                      {getButtonText(vantagem)}
                     </button>
                   </div>
                 </div>

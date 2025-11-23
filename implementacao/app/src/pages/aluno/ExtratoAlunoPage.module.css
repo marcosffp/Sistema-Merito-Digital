@@ -50,12 +50,18 @@
   color: #e74c3c;
 }
 
+.valorPositivo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #27ae60;
+}
+
 .valorLabel {
   font-size: 0.85rem;
   color: #999;
 }
 
 .emptyState {
-  color: #666;
+  color: var(--branco);
   margin-top: 1rem;
 }

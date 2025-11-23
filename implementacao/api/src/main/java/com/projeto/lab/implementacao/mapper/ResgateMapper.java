@@ -11,9 +11,10 @@ public class ResgateMapper {
     public ResgateResponse toResponse(Resgate resgate) {
         return new ResgateResponse(
             resgate.getId(),
+            resgate.getCupom(),
             resgate.getCodigo(),
+            resgate.getData(),
             resgate.getValor(),
-            resgate.getPagador() != null ? resgate.getPagador().getNome() : null, 
             resgate.getVantagem() != null ? resgate.getVantagem().getNome() : null
         );
     }

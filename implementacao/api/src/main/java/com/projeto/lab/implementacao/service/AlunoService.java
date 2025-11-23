@@ -1,6 +1,8 @@
 package com.projeto.lab.implementacao.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,11 +12,15 @@ import com.projeto.lab.implementacao.dto.AlunoRequest;
 import com.projeto.lab.implementacao.dto.AlunoResumoResponse;
 import com.projeto.lab.implementacao.dto.AlunoUpdateRequest;
 import com.projeto.lab.implementacao.dto.AlunoCompletoResponse;
+import com.projeto.lab.implementacao.dto.TransacaoRecebimentoDTO;
 import com.projeto.lab.implementacao.exception.AlunoException;
 import com.projeto.lab.implementacao.model.Aluno;
 import com.projeto.lab.implementacao.model.Instituicao;
+import com.projeto.lab.implementacao.model.Resgate;
+import com.projeto.lab.implementacao.model.Distribuicao;
 import com.projeto.lab.implementacao.repository.AlunoRepository;
 import com.projeto.lab.implementacao.mapper.AlunoMapper;
+import com.projeto.lab.implementacao.repository.DistribuicaoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +32,7 @@ public class AlunoService {
     private final InstituicaoService instituicaoService;
     private final AlunoMapper alunoMapper;
     private final ParticipanteService participanteService;
+    private final DistribuicaoRepository distribuicaoRepository;
 
      @Transactional
 
@@ -99,7 +106,8 @@ public class AlunoService {
 
     public AlunoCompletoResponse obterDadosCompletosAluno(Long id) {
         Aluno aluno = buscarPorId(id);
-        return alunoMapper.toCompletoResponse(aluno);
+        List<Distribuicao> distribuicoes = distribuicaoRepository.findByRecebedorId(id);
+        return alunoMapper.toCompletoResponse(aluno, distribuicoes);
     }
 
     @Transactional
@@ -121,12 +129,11 @@ public class AlunoService {
             aluno.setSenha(passwordEncoder.encode(dto.senha()));
         }
         if (dto.cpf() != null && !dto.cpf().isBlank()) {
-                    if (participanteService.existeParticipanteComCpf(dto.cpf())) {
-            throw new AlunoException("O CPF " + dto.cpf() + " já está em uso por outro participante.");
-        }
-    }
+            if (participanteService.existeParticipanteComCpf(dto.cpf())) {
+                throw new AlunoException("O CPF " + dto.cpf() + " já está em uso por outro participante.");
+            }
             aluno.setCpf(dto.cpf());
-        
+        }
         if (dto.rg() != null && !dto.rg().isBlank()) {
             aluno.setRg(dto.rg());
         }
@@ -138,6 +145,7 @@ public class AlunoService {
         }
 
         Aluno alunoAtualizado = alunoRepository.save(aluno);
-        return alunoMapper.toCompletoResponse(alunoAtualizado);
+        List<Distribuicao> distribuicoes = distribuicaoRepository.findByRecebedorId(id);
+        return alunoMapper.toCompletoResponse(alunoAtualizado, distribuicoes);
     }
 }

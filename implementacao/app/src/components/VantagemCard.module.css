@@ -100,6 +100,37 @@
   transform: translateY(-2px);
 }
 
+.status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.75rem 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+}
+
+.statusItem {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.statusBadge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.disponivel {
+  background: #d4edda;
+  color: #155724;
+}
+
+.indisponivel {
+  background: #f8d7da;
+  color: #721c24;
+}
+
 @media (max-width: 768px) {
   .footer {
     flex-direction: column;

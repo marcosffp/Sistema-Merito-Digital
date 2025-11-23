@@ -15,6 +15,7 @@ const CadastrarVantagemPage = () => {
     nome: '',
     descricao: '',
     custo: '',
+    estoque: '',
     imagem: null,
   });
 
@@ -49,6 +50,7 @@ const CadastrarVantagemPage = () => {
         nome: formData.nome,
         descricao: formData.descricao,
         custo: parseFloat(formData.custo),
+        estoque: parseInt(formData.estoque),
         empresaId: user.id,
         imagem: formData.imagem,
       };
@@ -57,7 +59,8 @@ const CadastrarVantagemPage = () => {
       alert('Vantagem cadastrada com sucesso!');
       navigate('/empresa/vantagens');
     } catch (err) {
-      setError(err);
+      console.error('Erro ao cadastrar:', err);
+      setError(err?.response?.data?.message || 'Erro ao cadastrar vantagem');
     } finally {
       setLoading(false);
     }
@@ -119,6 +122,22 @@ const CadastrarVantagemPage = () => {
                 onChange={handleChange}
                 placeholder="Ex: 100"
                 min="1"
+                step="1"
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="estoque">Estoque *</label>
+              <input
+                type="number"
+                id="estoque"
+                name="estoque"
+                value={formData.estoque}
+                onChange={handleChange}
+                placeholder="Ex: 10"
+                min="0"
                 step="1"
                 required
                 disabled={loading}

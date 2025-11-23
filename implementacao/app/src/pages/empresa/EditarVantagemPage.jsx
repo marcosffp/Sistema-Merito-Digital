@@ -17,6 +17,7 @@ const EditarVantagemPage = () => {
     nome: '',
     descricao: '',
     custo: '',
+    estoque: '',
     imagem: null,
   });
 
@@ -32,13 +33,15 @@ const EditarVantagemPage = () => {
         nome: data.nome,
         descricao: data.descricao || '',
         custo: data.custo.toString(),
+        estoque: data.estoque.toString(),
         imagem: null,
       });
       if (data.imagem) {
         setImagePreview(data.imagem);
       }
     } catch (err) {
-      setError(err);
+      console.error('Erro ao carregar:', err);
+      setError(err?.response?.data?.message || 'Erro ao carregar vantagem');
     } finally {
       setLoadingData(false);
     }
@@ -75,6 +78,7 @@ const EditarVantagemPage = () => {
         nome: formData.nome,
         descricao: formData.descricao,
         custo: parseFloat(formData.custo),
+        estoque: parseInt(formData.estoque),
         empresaId: user.id,
         imagem: formData.imagem,
       };
@@ -83,7 +87,8 @@ const EditarVantagemPage = () => {
       alert('Vantagem atualizada com sucesso!');
       navigate('/empresa/vantagens');
     } catch (err) {
-      setError(err);
+      console.error('Erro ao atualizar:', err);
+      setError(err?.response?.data?.message || 'Erro ao atualizar vantagem');
     } finally {
       setLoading(false);
     }
@@ -155,6 +160,22 @@ const EditarVantagemPage = () => {
                 onChange={handleChange}
                 placeholder="Ex: 100"
                 min="1"
+                step="1"
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="estoque">Estoque *</label>
+              <input
+                type="number"
+                id="estoque"
+                name="estoque"
+                value={formData.estoque}
+                onChange={handleChange}
+                placeholder="Ex: 10"
+                min="0"
                 step="1"
                 required
                 disabled={loading}

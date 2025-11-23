@@ -11,6 +11,7 @@ public record AlunoCompletoResponse(
     String endereco,
     String curso,
     Double saldoMoedas,
-    String nomeInstituicao,
-    List<ResgateResponse> resgates
+    String instituicao,
+    List<ResgateResponse> resgates,
+    List<TransacaoRecebimentoDTO> transacoes
 ) {}
