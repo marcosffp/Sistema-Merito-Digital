@@ -17,6 +17,7 @@ import com.projeto.lab.implementacao.repository.ResgateRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import java.security.SecureRandom;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ResgateService {
     private final ResgateRepository resgateRepository;
     private final AlunoService alunoService;
@@ -43,29 +45,50 @@ public class ResgateService {
         Vantagem vantagem = vantagemService.buscarPorId(dto.vantagemId());
         if (!participanteService.temSaldoSuficiente(dto.alunoId(), vantagem.getCusto())) {
             throw new ResgateException("Saldo insuficiente para realizar o resgate");
-
         }
+        
         participanteService.atualizarSaldo(dto.alunoId(), -Math.abs(vantagem.getCusto()));
         Aluno aluno = alunoService.buscarPorId(dto.alunoId());
+        
         Resgate resgate = new Resgate();
         resgate.setCupom(gerarCupomAleatorio());
         resgate.setCodigo(String.valueOf(System.currentTimeMillis()));
         resgate.setPagador(aluno);
         resgate.setData(LocalDateTime.now());
         resgate.setValor(vantagem.getCusto());
-        resgate.setPagador(aluno);
         resgate.setVantagem(vantagem);
         resgate.setUtilizado(false);
+        
         vantagem.setEstoque(vantagem.getEstoque() - 1);
         if (vantagem.getEstoque() <= 0) {
             vantagem.setDisponivel(false);
         }
+        
         Resgate salvo = resgateRepository.save(resgate);
-        emailService.sendEmail(aluno.getEmail(), "Confirmação de Resgate",
-                "Você resgatou a vantagem: " + vantagem.getNome() + "\nCupom: " + resgate.getCupom());
-        emailService.sendEmail(vantagem.getEmpresa().getEmail(), "Notificação de Resgate", "A vantagem "
-                + vantagem.getNome() + " foi resgatada por " + aluno.getNome() + "\nCupom: " + resgate.getCupom());
         vantagemService.salvarVantagem(vantagem);
+
+        // Enviar emails
+        try {
+            emailService.enviarCupomParaAluno(
+                aluno.getEmail(),
+                aluno.getNome(),
+                vantagem.getNome(),
+                resgate.getCodigo(),
+                resgate.getCupom(),
+                vantagem.getCusto()
+            );
+
+            emailService.enviarNotificacaoParaEmpresa(
+                vantagem.getEmpresa().getEmail(),
+                vantagem.getEmpresa().getNome(),
+                aluno.getNome(),
+                vantagem.getNome(),
+                resgate.getCodigo(),
+                resgate.getCupom()
+            );
+        } catch (Exception e) {
+            log.error("Erro ao enviar emails de resgate: {}", e.getMessage());
+        }
 
         return resgateMapper.toResponse(salvo);
     }
