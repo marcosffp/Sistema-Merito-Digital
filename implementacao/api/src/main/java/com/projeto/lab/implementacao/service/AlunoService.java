@@ -58,12 +58,9 @@ public class AlunoService {
                 .toList();
     }
 
-
-
     public void deletar(Long id) {
         alunoRepository.deleteById(id);
     }
-
 
     @Transactional
     public Aluno cadastrarAluno(AlunoRequest dto) {
@@ -110,38 +107,64 @@ public class AlunoService {
     public AlunoCompletoResponse updateAluno(Long id, AlunoUpdateRequest dto) {
         Aluno aluno = buscarPorId(id);
 
-        if (dto.nome() != null && !dto.nome().isBlank()) {
-            aluno.setNome(dto.nome());
-        }
-        if (dto.email() != null && !dto.email().isBlank()) {
-            alunoRepository.findByEmail(dto.email()).ifPresent(existingAluno -> {
-                if (!existingAluno.getId().equals(id)) {
-                    throw new AlunoException("O email " + dto.email() + " já está em uso por outro aluno.");
-                }
-            });
-            aluno.setEmail(dto.email());
-        }
-        if (dto.senha() != null && !dto.senha().isBlank()) {
-            aluno.setSenha(passwordEncoder.encode(dto.senha()));
-        }
-        if (dto.cpf() != null && !dto.cpf().isBlank()) {
-            if (participanteService.existeParticipanteComCpf(dto.cpf())) {
-                throw new AlunoException("O CPF " + dto.cpf() + " já está em uso por outro participante.");
-            }
-            aluno.setCpf(dto.cpf());
-        }
-        if (dto.rg() != null && !dto.rg().isBlank()) {
-            aluno.setRg(dto.rg());
-        }
-        if (dto.endereco() != null && !dto.endereco().isBlank()) {
-            aluno.setEndereco(dto.endereco());
-        }
-        if (dto.curso() != null && !dto.curso().isBlank()) {
-            aluno.setCurso(dto.curso());
-        }
+        atualizarDadosBasicos(aluno, dto);
+        atualizarEmailSeNecessario(aluno, dto);
+        atualizarSenhaSeNecessaria(aluno, dto);
+        atualizarCpfSeNecessario(aluno, dto);
 
         Aluno alunoAtualizado = alunoRepository.save(aluno);
         List<Distribuicao> distribuicoes = distribuicaoRepository.findByRecebedorId(id);
         return alunoMapper.toCompletoResponse(alunoAtualizado, distribuicoes);
+    }
+
+    private void atualizarDadosBasicos(Aluno aluno, AlunoUpdateRequest dto) {
+        if (hasText(dto.nome())) {
+            aluno.setNome(dto.nome());
+        }
+        if (hasText(dto.rg())) {
+            aluno.setRg(dto.rg());
+        }
+        if (hasText(dto.endereco())) {
+            aluno.setEndereco(dto.endereco());
+        }
+        if (hasText(dto.curso())) {
+            aluno.setCurso(dto.curso());
+        }
+    }
+
+    private void atualizarEmailSeNecessario(Aluno aluno, AlunoUpdateRequest dto) {
+        if (!hasText(dto.email())) {
+            return;
+        }
+
+        alunoRepository.findByEmail(dto.email()).ifPresent(existingAluno -> {
+            if (!existingAluno.getId().equals(aluno.getId())) {
+                throw new AlunoException("O email " + dto.email() + " já está em uso por outro aluno.");
+            }
+        });
+
+        aluno.setEmail(dto.email());
+    }
+
+    private void atualizarSenhaSeNecessaria(Aluno aluno, AlunoUpdateRequest dto) {
+        if (hasText(dto.senha())) {
+            aluno.setSenha(passwordEncoder.encode(dto.senha()));
+        }
+    }
+
+    private void atualizarCpfSeNecessario(Aluno aluno, AlunoUpdateRequest dto) {
+        if (!hasText(dto.cpf())) {
+            return;
+        }
+
+        if (participanteService.existeParticipanteComCpf(dto.cpf())) {
+            throw new AlunoException("O CPF " + dto.cpf() + " já está em uso por outro participante.");
+        }
+
+        aluno.setCpf(dto.cpf());
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }
