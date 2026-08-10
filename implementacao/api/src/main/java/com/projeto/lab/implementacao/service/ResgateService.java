@@ -43,13 +43,32 @@ public class ResgateService {
     @Transactional
     public ResgateResponse cadastrarResgate(ResgateRequest dto) {
         Vantagem vantagem = vantagemService.buscarPorId(dto.vantagemId());
-        if (!participanteService.temSaldoSuficiente(dto.alunoId(), vantagem.getCusto())) {
+        validarSaldo(dto.alunoId(), vantagem);
+
+        debitarSaldo(dto.alunoId(), vantagem);
+        Aluno aluno = alunoService.buscarPorId(dto.alunoId());
+
+        Resgate resgate = criarResgate(aluno, vantagem);
+        atualizarEstoque(vantagem);
+
+        Resgate salvo = salvarResgate(resgate, vantagem);
+
+        enviarEmailsDeConfirmacao(aluno, vantagem, resgate);
+
+        return resgateMapper.toResponse(salvo);
+    }
+
+    private void validarSaldo(Long alunoId, Vantagem vantagem) {
+        if (!participanteService.temSaldoSuficiente(alunoId, vantagem.getCusto())) {
             throw new ResgateException("Saldo insuficiente para realizar o resgate");
         }
-        
-        participanteService.atualizarSaldo(dto.alunoId(), -Math.abs(vantagem.getCusto()));
-        Aluno aluno = alunoService.buscarPorId(dto.alunoId());
-        
+    }
+
+    private void debitarSaldo(Long alunoId, Vantagem vantagem) {
+        participanteService.atualizarSaldo(alunoId, -Math.abs(vantagem.getCusto()));
+    }
+
+    private Resgate criarResgate(Aluno aluno, Vantagem vantagem) {
         Resgate resgate = new Resgate();
         resgate.setCupom(gerarCupomAleatorio());
         resgate.setCodigo(String.valueOf(System.currentTimeMillis()));
@@ -58,39 +77,44 @@ public class ResgateService {
         resgate.setValor(vantagem.getCusto());
         resgate.setVantagem(vantagem);
         resgate.setUtilizado(false);
-        
+        return resgate;
+    }
+
+    private void atualizarEstoque(Vantagem vantagem) {
         vantagem.setEstoque(vantagem.getEstoque() - 1);
         if (vantagem.getEstoque() <= 0) {
             vantagem.setDisponivel(false);
         }
-        
+    }
+
+    private Resgate salvarResgate(Resgate resgate, Vantagem vantagem) {
         Resgate salvo = resgateRepository.save(resgate);
         vantagemService.salvarVantagem(vantagem);
+        return salvo;
+    }
 
-        // Enviar emails
+    private void enviarEmailsDeConfirmacao(Aluno aluno, Vantagem vantagem, Resgate resgate) {
         try {
             emailService.enviarCupomParaAluno(
-                aluno.getEmail(),
-                aluno.getNome(),
-                vantagem.getNome(),
-                resgate.getCodigo(),
-                resgate.getCupom(),
-                vantagem.getCusto()
+                    aluno.getEmail(),
+                    aluno.getNome(),
+                    vantagem.getNome(),
+                    resgate.getCodigo(),
+                    resgate.getCupom(),
+                    vantagem.getCusto()
             );
 
             emailService.enviarNotificacaoParaEmpresa(
-                vantagem.getEmpresa().getEmail(),
-                vantagem.getEmpresa().getNome(),
-                aluno.getNome(),
-                vantagem.getNome(),
-                resgate.getCodigo(),
-                resgate.getCupom()
+                    vantagem.getEmpresa().getEmail(),
+                    vantagem.getEmpresa().getNome(),
+                    aluno.getNome(),
+                    vantagem.getNome(),
+                    resgate.getCodigo(),
+                    resgate.getCupom()
             );
         } catch (Exception e) {
             log.error("Erro ao enviar emails de resgate: {}", e.getMessage());
         }
-
-        return resgateMapper.toResponse(salvo);
     }
 
     public String validarCupomResgate(CupomResponse cupom) {
